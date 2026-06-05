@@ -118,6 +118,7 @@
 
         let m = jenisTransaksi === "Pemasukan" ? nominal : 0;
         let k = jenisTransaksi === "Pengeluaran" ? nominal : 0;
+        
         appState.activeData.push({ tgl, uraian, masuk: m, keluar: k, saldo: saldoAkhir + m - k });
         localStorage.setItem('edunexa_kas_db', JSON.stringify(appState));
         renderTable('active');
@@ -126,11 +127,15 @@
 
     function renderTable(periode) {
         const tbody = document.getElementById("bodyKas");
+        const elTotal = document.getElementById("totalSaldo");
+        
+        // --- HARD RESET TAMPILAN ---
         tbody.innerHTML = "";
+        let currentSaldo = 0; 
+        
         let data = periode === 'active' ? appState.activeData : appState.history[periode];
-        let currentSaldo = 0;
 
-        if(data) {
+        if(data && data.length > 0) {
             data.forEach(item => {
                 let tr = tbody.insertRow();
                 tr.insertCell(0).innerText = new Date(item.tgl).toLocaleDateString('id-ID', {day:'2-digit', month:'short'});
@@ -141,7 +146,9 @@
                 currentSaldo = item.saldo;
             });
         }
-        document.getElementById("totalSaldo").innerText = "Total Saldo: Rp " + currentSaldo.toLocaleString('id-ID');
+        
+        // Update total saldo secara paksa
+        elTotal.innerText = "Total Saldo: Rp " + currentSaldo.toLocaleString('id-ID');
         
         const isAct = periode === 'active';
         document.getElementById('formInputArea').style.display = isAct ? 'flex' : 'none';
