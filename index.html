@@ -5,17 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buku Kas Umum Sekolah</title>
     <style>
-        body { font-family: sans-serif; margin: 20px; background-color: #f8f9fa; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        body { font-family: sans-serif; margin: 10px; background-color: #f8f9fa; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        
+        /* Layout Form */
+        .form-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        input, select, button { padding: 10px; border: 1px solid #ccc; border-radius: 4px; width: 100%; box-sizing: border-box; }
+
+        /* Tabel Responsive */
+        .table-responsive { overflow-x: auto; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; min-width: 500px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; font-size: 14px; }
         th { background-color: #007bff; color: white; }
-        .form-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
-        input, select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-        button { padding: 10px 15px; cursor: pointer; border: none; border-radius: 4px; color: white; }
-        .btn-add { background-color: #28a745; }
-        .btn-wa { background-color: #25d366; margin-top: 10px; }
-        #totalSaldo { font-weight: bold; font-size: 1.2em; margin-top: 10px; }
+
+        .btn-add { background-color: #28a745; color: white; cursor: pointer; }
+        .btn-wa { background-color: #25d366; color: white; cursor: pointer; width: 100%; margin-top: 10px; border: none; }
+        
+        #totalSaldo { font-weight: bold; font-size: 1.2em; margin-top: 15px; padding: 10px; background: #e9ecef; }
+
+        /* Untuk layar komputer/tablet */
+        @media (min-width: 600px) {
+            .form-group { flex-direction: row; flex-wrap: wrap; }
+            input, select { width: auto; flex: 1; }
+            button { width: auto; }
+        }
     </style>
 </head>
 <body>
@@ -42,14 +55,16 @@
         <button class="btn-add" onclick="tambahData()">Tambah</button>
     </div>
 
-    <table id="tabelKas">
-        <thead>
-            <tr>
-                <th>No</th><th>Bulan</th><th>Tanggal</th><th>Uraian</th><th>Jenis</th><th>Nominal</th>
-            </tr>
-        </thead>
-        <tbody id="bodyKas"></tbody>
-    </table>
+    <div class="table-responsive">
+        <table id="tabelKas">
+            <thead>
+                <tr>
+                    <th>No</th><th>Bulan</th><th>Tanggal</th><th>Uraian</th><th>Jenis</th><th>Nominal</th>
+                </tr>
+            </thead>
+            <tbody id="bodyKas"></tbody>
+        </table>
+    </div>
 
     <div id="totalSaldo">Saldo Akhir: Rp 0</div>
     <button class="btn-wa" onclick="eksporKeCSV()">Download & Kirim ke WA (CSV)</button>
@@ -82,6 +97,10 @@
         else saldo -= nominal;
 
         document.getElementById("totalSaldo").innerText = "Saldo Akhir: Rp " + saldo.toLocaleString('id-ID');
+        
+        // Bersihkan input
+        document.getElementById("uraian").value = "";
+        document.getElementById("nominal").value = "";
     }
 
     function eksporKeCSV() {
@@ -90,7 +109,7 @@
         
         rows.forEach(row => {
             let cols = row.querySelectorAll("td");
-            csv += ${cols[0].innerText},${cols[1].innerText},${cols[2].innerText},${cols[3].innerText},${cols[4].innerText},${cols[5].innerText}\n;
+            csv += `${cols[0].innerText},${cols[1].innerText},${cols[2].innerText},${cols[3].innerText},${cols[4].innerText},${cols[5].innerText}\n`;
         });
 
         const blob = new Blob([csv], { type: 'text/csv' });
