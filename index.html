@@ -9,39 +9,40 @@
     <link rel="apple-touch-icon" href="https://i.ibb.co.com/JFvkRknD/Chat-GPT-Image-5-Jun-2026-22-30-27.png">
 
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 20px 10px; background-color: #f1f5f9; color: #334155; }
-        .container { max-width: 900px; margin: auto; background: #ffffff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 0; padding: 20px 10px; background-color: #f1f5f9; color: #334155; }
+        .container { max-width: 900px; margin: auto; background: #ffffff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
         .logo-container { text-align: center; margin-bottom: 15px; }
         .logo-container img { max-height: 80px; object-fit: contain; }
-        h2 { text-align: center; color: #1e293b; margin-top: 0; font-weight: 700; }
+        h2 { text-align: center; color: #1e293b; margin-top: 0; margin-bottom: 10px; font-weight: 700; }
         
-        .header-controls { margin-bottom: 20px; padding: 15px; background: #e0e7ff; border-radius: 8px; }
-        select.pilih-bulan { padding: 10px; border-radius: 6px; width: 100%; border: 1px solid #818cf8; }
+        .header-controls { margin-bottom: 25px; padding: 15px; background: #e0e7ff; border-radius: 8px; border: 1px solid #c7d2fe; }
+        select.pilih-bulan { padding: 10px; border-radius: 6px; border: 1px solid #818cf8; font-weight: 600; color: #3730a3; background: white; width: 100%; }
 
-        .form-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; }
-        label { font-size: 13px; font-weight: 600; color: #64748b; }
-        input, textarea, button { padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; width: 100%; box-sizing: border-box; font-size: 14px; }
+        .form-group { display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; }
+        label { font-size: 13px; font-weight: 600; color: #64748b; margin-bottom: -5px; }
+        input, textarea, button { padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; width: 100%; box-sizing: border-box; font-family: inherit; font-size: 14px; }
         
         .toggle-group { display: flex; gap: 8px; }
-        .toggle-btn { flex: 1; cursor: pointer; background: white; color: #64748b; font-weight: 600; }
+        .toggle-btn { flex: 1; cursor: pointer; border: 1px solid #cbd5e1; background: white; color: #64748b; font-weight: 600; padding: 12px; border-radius: 6px; }
         #btnPemasukan.active { background: #10b981; color: white; border-color: #10b981; }
         #btnPengeluaran.active { background: #ef4444; color: white; border-color: #ef4444; }
 
         .btn-add { background-color: #3b82f6; color: white; border: none; font-weight: 600; cursor: pointer; }
         
-        .table-responsive { overflow-x: auto; margin-top: 20px; border: 1px solid #e2e8f0; border-radius: 8px; }
+        .table-responsive { overflow-x: auto; border-radius: 8px; border: 1px solid #e2e8f0; margin-top: 20px; }
         table { width: 100%; border-collapse: collapse; min-width: 600px; background: white; }
-        th, td { padding: 12px; border-bottom: 1px solid #e2e8f0; text-align: center; }
-        th { background-color: #f8fafc; font-size: 11px; text-transform: uppercase; }
+        th, td { padding: 12px; font-size: 14px; border-bottom: 1px solid #e2e8f0; text-align: center; }
+        th { background-color: #f8fafc; color: #475569; font-weight: 600; text-transform: uppercase; font-size: 11px; }
         
-        #totalSaldo { font-weight: 700; margin-top: 20px; padding: 15px; background: #1e293b; color: white; text-align: right; border-radius: 8px; }
+        th:nth-child(2), td:nth-child(2) { text-align: left; }
+        th:nth-child(3), td:nth-child(3), th:nth-child(4), td:nth-child(4), th:nth-child(5), td:nth-child(5) { text-align: right; font-variant-numeric: tabular-nums; }
+        
+        #totalSaldo { font-weight: 700; margin-top: 25px; padding: 15px; background: #1e293b; color: white; text-align: right; border-radius: 8px; }
 
         .bottom-actions { display: flex; gap: 10px; margin-top: 20px; }
-        .btn-action { flex: 1; padding: 14px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
-        .btn-tutup { background-color: #f59e0b; color: white; }
-        .btn-hapus { background-color: #ef4444; color: white; }
-        .btn-share { background-color: #10b981; color: white; }
-        .btn-share:disabled { background-color: #cbd5e1; cursor: not-allowed; }
+        .btn-tutup { background-color: #f59e0b; color: white; border: none; font-weight: 600; cursor: pointer; flex: 1; padding: 14px; border-radius: 6px; }
+        .btn-hapus { background-color: #ef4444; color: white; border: none; font-weight: 600; cursor: pointer; flex: 1; padding: 14px; border-radius: 6px; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .btn-share { background-color: #10b981; color: white; border: none; font-weight: 600; cursor: pointer; flex: 1; padding: 14px; border-radius: 6px; display: flex; align-items: center; justify-content: center; gap: 5px; }
     </style>
 </head>
 <body onload="initApp()">
@@ -59,7 +60,7 @@
         <label>Jenis</label>
         <div class="toggle-group"><button class="toggle-btn active" id="btnPemasukan" onclick="setJenis('Pemasukan')">Pemasukan</button><button class="toggle-btn" id="btnPengeluaran" onclick="setJenis('Pengeluaran')">Pengeluaran</button></div>
         <label>Uraian</label><textarea id="uraian"></textarea>
-        <label>Nominal (Rp)</label><input type="text" id="nominal" placeholder="0" oninput="formatRupiah(this)">
+        <label>Nominal (Rp)</label><input type="text" id="nominal" inputmode="numeric" placeholder="0" oninput="formatRupiah(this)">
         <button class="btn-add" onclick="tambahData()">+ Tambah Transaksi</button>
     </div>
 
@@ -73,9 +74,9 @@
     <div id="totalSaldo">Total Saldo: Rp 0</div>
     
     <div class="bottom-actions">
-        <button id="btnTutupBuku" class="btn-action btn-tutup" onclick="tutupBuku()">Tutup Buku</button>
-        <button id="btnHapusRiwayat" class="btn-action btn-hapus" onclick="hapusRiwayat()" style="display:none;">Hapus</button>
-        <button id="btnShare" class="btn-action btn-share" onclick="eksekusiShareBiasa()">Bagikan CSV</button>
+        <button id="btnTutupBuku" class="btn-tutup" onclick="tutupBuku()">Tutup Buku</button>
+        <button id="btnHapusRiwayat" class="btn-hapus" onclick="hapusRiwayat()" style="display:none;">Hapus Riwayat</button>
+        <button id="btnShare" class="btn-share" onclick="eksekusiShareBiasa()" style="display:none;">Bagikan CSV</button>
     </div>
 </div>
 
@@ -84,8 +85,10 @@
     let jenisTransaksi = "Pemasukan";
 
     function initApp() {
-        const savedData = localStorage.getItem('edunexa_kas_db');
-        if (savedData) appState = JSON.parse(savedData);
+        try {
+            const savedData = localStorage.getItem('edunexa_kas_db');
+            if (savedData) appState = JSON.parse(savedData);
+        } catch(e) { localStorage.removeItem('edunexa_kas_db'); }
         updateDropdownBulan();
         renderTable('active');
         document.getElementById('tanggal').value = new Date().toISOString().split('T')[0];
@@ -109,19 +112,16 @@
         const nominal = parseInt(nomRaw) || 0;
 
         if(!tgl || !uraian || !nominal) return alert("Lengkapi data!");
-
         let saldoAkhir = appState.activeData.length > 0 ? appState.activeData[appState.activeData.length - 1].saldo : 0;
         if (appState.activeData.length === 0 && jenisTransaksi === "Pengeluaran") return alert("Data awal harus Pemasukan!");
         if (jenisTransaksi === "Pengeluaran" && nominal > saldoAkhir) return alert("Saldo tidak cukup!");
 
         let m = jenisTransaksi === "Pemasukan" ? nominal : 0;
         let k = jenisTransaksi === "Pengeluaran" ? nominal : 0;
-        
         appState.activeData.push({ tgl, uraian, masuk: m, keluar: k, saldo: saldoAkhir + m - k });
         localStorage.setItem('edunexa_kas_db', JSON.stringify(appState));
         renderTable('active');
-        document.getElementById('uraian').value = ""; 
-        document.getElementById('nominal').value = "";
+        document.getElementById('uraian').value = ""; document.getElementById('nominal').value = "";
     }
 
     function renderTable(periode) {
@@ -146,8 +146,8 @@
         const isAct = periode === 'active';
         document.getElementById('formInputArea').style.display = isAct ? 'flex' : 'none';
         document.getElementById('btnTutupBuku').style.display = isAct ? 'block' : 'none';
-        document.getElementById('btnHapusRiwayat').style.display = isAct ? 'none' : 'block';
-        document.getElementById('btnShare').disabled = isAct;
+        document.getElementById('btnHapusRiwayat').style.display = isAct ? 'none' : 'flex';
+        document.getElementById('btnShare').style.display = isAct ? 'none' : 'flex';
     }
 
     function hapusRiwayat() {
@@ -167,7 +167,7 @@
         if(!b || appState.history[b]) return;
         appState.history[b] = [...appState.activeData];
         let s = appState.activeData[appState.activeData.length-1].saldo;
-        appState.activeData = [{tgl: new Date().toISOString().split('T')[0], uraian: "Saldo Awal", masuk: s, keluar: 0, saldo: s}];
+        appState.activeData = [{tgl: new Date().toISOString().split('T')[0], uraian: "Saldo Awal ("+b+")", masuk: s, keluar: 0, saldo: s}];
         localStorage.setItem('edunexa_kas_db', JSON.stringify(appState));
         updateDropdownBulan();
         document.getElementById('pilihBulan').value = b;
