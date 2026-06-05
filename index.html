@@ -33,7 +33,6 @@
         table { width: 100%; border-collapse: collapse; min-width: 600px; background: white; }
         th, td { padding: 12px; font-size: 14px; border-bottom: 1px solid #e2e8f0; text-align: center; }
         th { background-color: #f8fafc; color: #475569; font-weight: 600; text-transform: uppercase; font-size: 11px; }
-        
         th:nth-child(2), td:nth-child(2) { text-align: left; }
         th:nth-child(3), td:nth-child(3), th:nth-child(4), td:nth-child(4), th:nth-child(5), td:nth-child(5) { text-align: right; font-variant-numeric: tabular-nums; }
         
@@ -41,8 +40,9 @@
 
         .bottom-actions { display: flex; gap: 10px; margin-top: 20px; }
         .btn-tutup { background-color: #f59e0b; color: white; border: none; font-weight: 600; cursor: pointer; flex: 1; padding: 14px; border-radius: 6px; }
-        .btn-hapus { background-color: #ef4444; color: white; border: none; font-weight: 600; cursor: pointer; flex: 1; padding: 14px; border-radius: 6px; display: flex; align-items: center; justify-content: center; gap: 5px; }
-        .btn-share { background-color: #10b981; color: white; border: none; font-weight: 600; cursor: pointer; flex: 1; padding: 14px; border-radius: 6px; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .btn-hapus { background-color: #ef4444; color: white; border: none; font-weight: 600; cursor: pointer; flex: 1; padding: 14px; border-radius: 6px; }
+        .btn-share { background-color: #10b981; color: white; border: none; font-weight: 600; cursor: pointer; flex: 1; padding: 14px; border-radius: 6px; }
+        .btn-reset { background-color: #64748b; color: white; border: none; font-weight: 600; cursor: pointer; flex: 1; padding: 14px; border-radius: 6px; }
     </style>
 </head>
 <body onload="initApp()">
@@ -77,17 +77,25 @@
         <button id="btnTutupBuku" class="btn-tutup" onclick="tutupBuku()">Tutup Buku</button>
         <button id="btnHapusRiwayat" class="btn-hapus" onclick="hapusRiwayat()" style="display:none;">Hapus Riwayat</button>
         <button id="btnShare" class="btn-share" onclick="eksekusiShareBiasa()" style="display:none;">Bagikan CSV</button>
+        <button class="btn-reset" onclick="resetTotal()">Reset Semua</button>
     </div>
 </div>
 
 <script>
-    let appState = { activeData: [], history: {} };
+    // Penambahan historyOrder untuk melacak urutan bulan
+    let appState = { activeData: [], history: {}, historyOrder: [] };
     let jenisTransaksi = "Pemasukan";
 
     function initApp() {
         try {
             const savedData = localStorage.getItem('edunexa_kas_db');
-            if (savedData) appState = JSON.parse(savedData);
+            if (savedData) {
+                appState = JSON.parse(savedData);
+                // Migrasi data lama ke historyOrder jika belum ada
+                if (!appState.historyOrder) {
+                    appState.historyOrder = Object.keys(appState.history);
+                }
+            }
         } catch(e) { localStorage.removeItem('edunexa_kas_db'); }
         updateDropdownBulan();
         renderTable('active');
@@ -113,9 +121,7 @@
 
         if(!tgl || !uraian || !nominal) return alert("Lengkapi data!");
         let saldoAkhir = appState.activeData.length > 0 ? appState.activeData[appState.activeData.length - 1].saldo : 0;
-        if (appState.activeData.length === 0 && jenisTransaksi === "Pengeluaran") return alert("Data awal harus Pemasukan!");
-        if (jenisTransaksi === "Pengeluaran" && nominal > saldoAkhir) return alert("Saldo tidak cukup!");
-
+        
         let m = jenisTransaksi === "Pemasukan" ? nominal : 0;
         let k = jenisTransaksi === "Pengeluaran" ? nominal : 0;
         
@@ -128,12 +134,9 @@
     function renderTable(periode) {
         const tbody = document.getElementById("bodyKas");
         const elTotal = document.getElementById("totalSaldo");
-        
-        // --- HARD RESET TAMPILAN ---
         tbody.innerHTML = "";
-        let currentSaldo = 0; 
-        
         let data = periode === 'active' ? appState.activeData : appState.history[periode];
+        let currentSaldo = 0;
 
         if(data && data.length > 0) {
             data.forEach(item => {
@@ -146,22 +149,38 @@
                 currentSaldo = item.saldo;
             });
         }
-        
-        // Update total saldo secara paksa
         elTotal.innerText = "Total Saldo: Rp " + currentSaldo.toLocaleString('id-ID');
         
         const isAct = periode === 'active';
         document.getElementById('formInputArea').style.display = isAct ? 'flex' : 'none';
         document.getElementById('btnTutupBuku').style.display = isAct ? 'block' : 'none';
-        document.getElementById('btnHapusRiwayat').style.display = isAct ? 'none' : 'flex';
-        document.getElementById('btnShare').style.display = isAct ? 'none' : 'flex';
+        document.getElementById('btnHapusRiwayat').style.display = isAct ? 'none' : 'block';
+        document.getElementById('btnShare').style.display = isAct ? 'none' : 'block';
     }
 
     function hapusRiwayat() {
         let p = document.getElementById('pilihBulan').value;
-        if(p !== 'active' && confirm("Hapus riwayat bulan " + p + "?")) {
-            delete appState.history[p];
+        if(p === 'active') return;
+
+        let idx = appState.historyOrder.indexOf(p);
+        // Ambil semua bulan dari bulan yang dipilih sampai bulan terakhir
+        let toDelete = appState.historyOrder.slice(idx);
+
+        if(confirm("Menghapus bulan " + p + " dan bulan setelahnya (" + toDelete.join(", ") + ")? Ini perlu dilakukan agar saldo tetap valid.")) {
+            toDelete.forEach(m => delete appState.history[m]);
+            appState.historyOrder = appState.historyOrder.slice(0, idx);
+            
             localStorage.setItem('edunexa_kas_db', JSON.stringify(appState));
+            updateDropdownBulan();
+            document.getElementById('pilihBulan').value = 'active';
+            renderTable('active');
+        }
+    }
+    
+    function resetTotal() {
+        if(confirm("Yakin ingin menghapus SELURUH data aplikasi?")) {
+            appState = { activeData: [], history: {}, historyOrder: [] };
+            localStorage.removeItem('edunexa_kas_db');
             updateDropdownBulan();
             document.getElementById('pilihBulan').value = 'active';
             renderTable('active');
@@ -172,7 +191,10 @@
         if(appState.activeData.length === 0) return alert("Tidak ada data!");
         let b = prompt("Masukkan NAMA BULAN:");
         if(!b || appState.history[b]) return;
+        
         appState.history[b] = [...appState.activeData];
+        appState.historyOrder.push(b); // Rekam urutan bulan
+        
         let s = appState.activeData[appState.activeData.length-1].saldo;
         appState.activeData = [{tgl: new Date().toISOString().split('T')[0], uraian: "Saldo Awal ("+b+")", masuk: s, keluar: 0, saldo: s}];
         localStorage.setItem('edunexa_kas_db', JSON.stringify(appState));
@@ -184,7 +206,10 @@
     function updateDropdownBulan() {
         const s = document.getElementById('pilihBulan');
         s.innerHTML = '<option value="active">-- Bulan Berjalan --</option>';
-        for(let k in appState.history) s.innerHTML += `<option value="${k}">Riwayat: ${k}</option>`;
+        // Iterasi berdasarkan urutan yang tersimpan (historyOrder)
+        appState.historyOrder.forEach(k => {
+            s.innerHTML += `<option value="${k}">Riwayat: ${k}</option>`;
+        });
     }
 
     function gantiBulan() { renderTable(document.getElementById('pilihBulan').value); }
