@@ -97,38 +97,24 @@
 
         .peringatan-histori { text-align: center; font-size: 12px; color: #ef4444; margin-top: 10px; font-weight: bold; display: none; }
 
-        /* Tata letak untuk tombol aksi bawah */
-        .bottom-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
+        .bottom-actions { display: flex; gap: 10px; margin-top: 20px; }
 
         .btn-tutup {
-            background-color: #f59e0b;
-            color: white;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            flex: 1; /* Agar membagi ruang sama besar */
-            padding: 14px;
+            background-color: #f59e0b; color: white; border: none; font-weight: 600; cursor: pointer; flex: 1; padding: 14px;
         }
         .btn-tutup:hover { background-color: #d97706; }
 
         .btn-share { 
-            background-color: #10b981; 
-            color: white; 
-            border: none; 
-            font-weight: 600; 
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 8px;
-            flex: 1; /* Agar membagi ruang sama besar */
-            padding: 14px;
+            background-color: #10b981; color: white; border: none; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; flex: 1; padding: 14px; transition: background-color 0.2s;
         }
-        .btn-share:hover { background-color: #059669; }
+        .btn-share:hover:not(:disabled) { background-color: #059669; }
+        
+        /* CSS Khusus saat tombol bagikan terkunci (disabled) */
+        .btn-share:disabled {
+            background-color: #cbd5e1;
+            color: #64748b;
+            cursor: not-allowed;
+        }
 
         @media (min-width: 768px) {
             .form-row { display: flex; gap: 15px; }
@@ -147,12 +133,12 @@
 
     <div class="header-controls">
         <select id="pilihBulan" class="pilih-bulan" onchange="gantiBulan()">
-            <option value="active">-- Bulan Berjalan (Aktif) --</option>
+            <option value="active">-- Buku Bulan Berjalan (Aktif) --</option>
         </select>
     </div>
     
     <div id="pesanHistori" class="peringatan-histori">
-        Anda sedang melihat riwayat. Data tidak dapat diubah.
+        Anda sedang melihat riwayat. Data tidak dapat diubah, namun laporan bisa dibagikan.
     </div>
 
     <div class="form-group" id="formInputArea">
@@ -195,230 +181,5 @@
     <div class="bottom-actions">
         <button id="btnTutupBuku" class="btn-tutup" onclick="tutupBuku()">Tutup Buku</button>
         
-        <button class="btn-share" onclick="eksekusiShareBiasa()">
-            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M17.5 16.5c-1.1 0-2.1.5-2.7 1.2l-6.8-3.9c.1-.4.1-.8.1-1.3s0-.9-.1-1.3l6.8-3.9c.6.7 1.6 1.2 2.7 1.2 2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4c0 .4 0 .8.1 1.3L6.8 9.7c-.6-.7-1.6-1.2-2.7-1.2-2.2 0-4 1.8-4 4s1.8 4 4 4c1.1 0 2.1-.5 2.7-1.2l6.8 3.9c-.1.4-.1.8-.1 1.3 0 2.2 1.8 4 4 4s4-1.8 4-4-1.8-4-4-4z"/>
-            </svg>
-            Bagikan CSV
-        </button>
-    </div>
-</div>
-
-<script>
-    let appState = {
-        activeData: [], 
-        history: {}     
-    };
-    
-    let jenisTransaksi = "Pemasukan";
-
-    function initApp() {
-        const savedData = localStorage.getItem('edunexa_kas_db');
-        if (savedData) {
-            appState = JSON.parse(savedData);
-        }
-        updateDropdownBulan();
-        renderTable('active');
-        setTanggalHariIni();
-    }
-
-    function simpanKeLocalStorage() {
-        localStorage.setItem('edunexa_kas_db', JSON.stringify(appState));
-    }
-
-    function setTanggalHariIni() {
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('tanggal').value = today;
-    }
-
-    function formatRupiah(element) {
-        let value = element.value.replace(/[^0-9]/g, '');
-        element.value = value ? parseInt(value, 10).toLocaleString('id-ID') : '';
-    }
-
-    function setJenis(jenis) {
-        jenisTransaksi = jenis;
-        document.getElementById("btnPemasukan").classList.toggle("active", jenis === "Pemasukan");
-        document.getElementById("btnPengeluaran").classList.toggle("active", jenis === "Pengeluaran");
-    }
-
-    function tambahData() {
-        const tgl = document.getElementById("tanggal").value;
-        const uraian = document.getElementById("uraian").value;
-        const nominalInput = document.getElementById("nominal").value.replace(/\./g, '');
-        const nominal = parseInt(nominalInput) || 0;
-
-        if (!tgl || !uraian || !nominal) { 
-            alert("Mohon lengkapi semua data transaksi!"); return; 
-        }
-
-        let saldoAkhir = appState.activeData.length > 0 ? appState.activeData[appState.activeData.length - 1].saldo : 0;
-
-        if (appState.activeData.length === 0 && jenisTransaksi === "Pengeluaran") {
-            alert("Data awal harus berupa Pemasukan sebagai saldo awal."); return;
-        }
-
-        if (jenisTransaksi === "Pengeluaran" && nominal > saldoAkhir) {
-            alert("Peringatan: Saldo tidak mencukupi untuk pengeluaran ini!"); return;
-        }
-
-        let masuk = jenisTransaksi === "Pemasukan" ? nominal : 0;
-        let keluar = jenisTransaksi === "Pengeluaran" ? nominal : 0;
-        let saldoBaru = saldoAkhir + masuk - keluar;
-
-        appState.activeData.push({
-            tgl: tgl,
-            uraian: uraian,
-            masuk: masuk,
-            keluar: keluar,
-            saldo: saldoBaru
-        });
-
-        simpanKeLocalStorage();
-        renderTable('active');
-
-        document.getElementById("uraian").value = "";
-        document.getElementById("nominal").value = "";
-    }
-
-    function renderTable(periode) {
-        const tbody = document.getElementById("bodyKas");
-        tbody.innerHTML = "";
-        let currentSaldo = 0;
-
-        let dataTampil = periode === 'active' ? appState.activeData : appState.history[periode];
-
-        dataTampil.forEach(item => {
-            let tr = tbody.insertRow();
-            const tglObj = new Date(item.tgl);
-            const tglFormat = tglObj.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-            
-            tr.insertCell(0).innerText = tglFormat;
-            tr.insertCell(1).innerText = item.uraian;
-            tr.insertCell(2).innerText = item.masuk > 0 ? item.masuk.toLocaleString('id-ID') : '-';
-            tr.insertCell(3).innerText = item.keluar > 0 ? item.keluar.toLocaleString('id-ID') : '-';
-            tr.insertCell(4).innerText = item.saldo.toLocaleString('id-ID');
-            
-            currentSaldo = item.saldo;
-        });
-
-        document.getElementById("totalSaldo").innerText = "Total Saldo: Rp " + currentSaldo.toLocaleString('id-ID');
-
-        // Menyesuaikan visibilitas elemen
-        if (periode === 'active') {
-            document.getElementById('formInputArea').style.display = 'flex';
-            document.getElementById('btnTutupBuku').style.display = 'block'; // Tampilkan tombol Tutup Buku
-            document.getElementById('pesanHistori').style.display = 'none';
-        } else {
-            document.getElementById('formInputArea').style.display = 'none';
-            document.getElementById('btnTutupBuku').style.display = 'none'; // Sembunyikan tombol Tutup Buku
-            document.getElementById('pesanHistori').style.display = 'block';
-        }
-    }
-
-    async function prosesShareCSV(namaFile, periodeText) {
-        let csv = "Tanggal,Uraian,Pemasukan,Pengeluaran,Saldo\n";
-        document.querySelectorAll("#tabelKas tbody tr").forEach(row => {
-            let cols = row.querySelectorAll("td");
-            let pemasukan = cols[2].innerText.replace(/\./g, '').replace('-', '0');
-            let pengeluaran = cols[3].innerText.replace(/\./g, '').replace('-', '0');
-            let saldo = cols[4].innerText.replace(/\./g, '').replace('-', '0'); 
-            
-            csv += `${cols[0].innerText},"${cols[1].innerText}",${pemasukan},${pengeluaran},${saldo}\n`;
-        });
-
-        const file = new File([csv], namaFile, { type: "text/csv" });
-
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            await navigator.share({ 
-                files: [file], 
-                title: "Laporan Kas Edunexa", 
-                text: `Terlampir Laporan Buku Kas Edunexa. Periode: ${periodeText}` 
-            });
-        } else {
-            alert("Fitur bagikan otomatis tidak didukung browser ini. File akan langsung diunduh.");
-            const url = window.URL.createObjectURL(file);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = namaFile;
-            a.click();
-        }
-    }
-
-    async function eksekusiShareBiasa() {
-        let periodeTerpilih = document.getElementById('pilihBulan').value;
-        let namaFile = periodeTerpilih === 'active' ? "Buku_Kas_Aktif.csv" : `Buku_Kas_${periodeTerpilih}.csv`;
-        let periodeText = periodeTerpilih === 'active' ? 'Bulan Berjalan' : periodeTerpilih;
-
-        try {
-            await prosesShareCSV(namaFile, periodeText);
-        } catch (err) {
-            console.log("Membatalkan share:", err);
-        }
-    }
-
-    async function tutupBuku() {
-        if (appState.activeData.length === 0) {
-            alert("Belum ada transaksi di bulan ini yang bisa ditutup.");
-            return;
-        }
-
-        let namaBulan = prompt("PENTING: File akan otomatis dibagikan ke WA sebagai backup.\n\nMasukkan NAMA BULAN yang akan ditutup:\n(Contoh: Juni 2026)");
-        
-        if (!namaBulan) return; 
-        
-        if (appState.history[namaBulan]) {
-            alert("Nama bulan tersebut sudah ada di riwayat! Silakan gunakan nama lain.");
-            return;
-        }
-
-        try {
-            await prosesShareCSV(`Buku_Kas_${namaBulan}.csv`, namaBulan);
-            eksekusiSimpanTutupBuku(namaBulan);
-        } catch (error) {
-            console.log("Status Share:", error);
-            let lanjut = confirm("Proses bagikan gagal atau dibatalkan oleh sistem.\n\nApakah Anda tetap ingin menutup buku dan menyimpan datanya ke riwayat?");
-            if (lanjut) {
-                eksekusiSimpanTutupBuku(namaBulan);
-            }
-        }
-    }
-
-    function eksekusiSimpanTutupBuku(namaBulan) {
-        appState.history[namaBulan] = [...appState.activeData];
-        let saldoTerakhir = appState.activeData[appState.activeData.length - 1].saldo;
-
-        const today = new Date().toISOString().split('T')[0];
-        appState.activeData = [{
-            tgl: today,
-            uraian: "Saldo Awal (Pindahan dari " + namaBulan + ")",
-            masuk: saldoTerakhir,
-            keluar: 0,
-            saldo: saldoTerakhir
-        }];
-
-        simpanKeLocalStorage();
-        updateDropdownBulan();
-        renderTable('active');
-        
-        alert(`Sukses! Buku bulan ${namaBulan} telah ditutup. Saldo akhir telah dipindahkan sebagai Saldo Awal bulan berikutnya.`);
-    }
-
-    function updateDropdownBulan() {
-        const select = document.getElementById('pilihBulan');
-        select.innerHTML = '<option value="active">-- Bulan Berjalan (Aktif) --</option>';
-        
-        for (let key in appState.history) {
-            let opt = document.createElement('option');
-            opt.value = key;
-            opt.innerText = "Lihat Riwayat: " + key;
-            select.appendChild(opt);
-        }
-    }
-
-    function gantiBulan() {
-        renderTable(document.getElementById('pilihBulan').value);
-    }
-</script>
-</body>
-</html>
+        <button id="btnShare" class="btn-share" onclick="eksekusiShareBiasa()">
+            <svg width="20" height="20" fill="
