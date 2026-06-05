@@ -28,9 +28,6 @@
         h2 { text-align: center; color: #1e293b; margin-top: 0; margin-bottom: 10px; font-weight: 700; letter-spacing: -0.5px; }
         
         .header-controls {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
             margin-bottom: 25px;
             padding: 15px;
             background: #e0e7ff;
@@ -47,18 +44,6 @@
             background: white;
             width: 100%;
         }
-
-        .btn-tutup {
-            background-color: #f59e0b;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-        }
-        .btn-tutup:hover { background-color: #d97706; }
 
         .form-group { 
             display: flex; 
@@ -89,8 +74,6 @@
 
         .btn-add { background-color: #3b82f6; color: white; border: none; font-weight: 600; cursor: pointer; margin-top: 5px; }
         .btn-add:hover { background-color: #2563eb; }
-
-        .btn-share { background-color: #10b981; color: white; border: none; width: 100%; margin-top: 20px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
         
         .table-responsive { overflow-x: auto; border-radius: 8px; border: 1px solid #e2e8f0; }
         table { width: 100%; border-collapse: collapse; min-width: 700px; background: white; }
@@ -114,11 +97,42 @@
 
         .peringatan-histori { text-align: center; font-size: 12px; color: #ef4444; margin-top: 10px; font-weight: bold; display: none; }
 
+        /* Tata letak untuk tombol aksi bawah */
+        .bottom-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-tutup {
+            background-color: #f59e0b;
+            color: white;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            flex: 1; /* Agar membagi ruang sama besar */
+            padding: 14px;
+        }
+        .btn-tutup:hover { background-color: #d97706; }
+
+        .btn-share { 
+            background-color: #10b981; 
+            color: white; 
+            border: none; 
+            font-weight: 600; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px;
+            flex: 1; /* Agar membagi ruang sama besar */
+            padding: 14px;
+        }
+        .btn-share:hover { background-color: #059669; }
+
         @media (min-width: 768px) {
             .form-row { display: flex; gap: 15px; }
             .form-row > * { flex: 1; margin-bottom: 0; }
-            .header-controls { flex-direction: row; align-items: center; }
-            .btn-tutup { width: auto; padding: 10px 20px; }
         }
     </style>
 </head>
@@ -135,7 +149,6 @@
         <select id="pilihBulan" class="pilih-bulan" onchange="gantiBulan()">
             <option value="active">-- Buku Bulan Berjalan (Aktif) --</option>
         </select>
-        <button id="btnTutupBuku" class="btn-tutup" onclick="tutupBuku()">Tutup Buku Bulan Ini</button>
     </div>
     
     <div id="pesanHistori" class="peringatan-histori">
@@ -179,12 +192,16 @@
 
     <div id="totalSaldo">Total Saldo: Rp 0</div>
     
-    <button class="btn-share" onclick="eksekusiShareBiasa()">
-        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M17.5 16.5c-1.1 0-2.1.5-2.7 1.2l-6.8-3.9c.1-.4.1-.8.1-1.3s0-.9-.1-1.3l6.8-3.9c.6.7 1.6 1.2 2.7 1.2 2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4c0 .4 0 .8.1 1.3L6.8 9.7c-.6-.7-1.6-1.2-2.7-1.2-2.2 0-4 1.8-4 4s1.8 4 4 4c1.1 0 2.1-.5 2.7-1.2l6.8 3.9c-.1.4-.1.8-.1 1.3 0 2.2 1.8 4 4 4s4-1.8 4-4-1.8-4-4-4z"/>
-        </svg>
-        Bagikan Laporan (CSV)
-    </button>
+    <div class="bottom-actions">
+        <button id="btnTutupBuku" class="btn-tutup" onclick="tutupBuku()">Tutup Buku</button>
+        
+        <button class="btn-share" onclick="eksekusiShareBiasa()">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17.5 16.5c-1.1 0-2.1.5-2.7 1.2l-6.8-3.9c.1-.4.1-.8.1-1.3s0-.9-.1-1.3l6.8-3.9c.6.7 1.6 1.2 2.7 1.2 2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4c0 .4 0 .8.1 1.3L6.8 9.7c-.6-.7-1.6-1.2-2.7-1.2-2.2 0-4 1.8-4 4s1.8 4 4 4c1.1 0 2.1-.5 2.7-1.2l6.8 3.9c-.1.4-.1.8-.1 1.3 0 2.2 1.8 4 4 4s4-1.8 4-4-1.8-4-4-4z"/>
+            </svg>
+            Bagikan CSV
+        </button>
+    </div>
 </div>
 
 <script>
@@ -287,18 +304,18 @@
 
         document.getElementById("totalSaldo").innerText = "Total Saldo: Rp " + currentSaldo.toLocaleString('id-ID');
 
+        // Menyesuaikan visibilitas elemen
         if (periode === 'active') {
             document.getElementById('formInputArea').style.display = 'flex';
-            document.getElementById('btnTutupBuku').style.display = 'block';
+            document.getElementById('btnTutupBuku').style.display = 'block'; // Tampilkan tombol Tutup Buku
             document.getElementById('pesanHistori').style.display = 'none';
         } else {
             document.getElementById('formInputArea').style.display = 'none';
-            document.getElementById('btnTutupBuku').style.display = 'none';
+            document.getElementById('btnTutupBuku').style.display = 'none'; // Sembunyikan tombol Tutup Buku
             document.getElementById('pesanHistori').style.display = 'block';
         }
     }
 
-    // --- FUNGSI GENERATOR CSV INTI ---
     async function prosesShareCSV(namaFile, periodeText) {
         let csv = "Tanggal,Uraian,Pemasukan,Pengeluaran,Saldo\n";
         document.querySelectorAll("#tabelKas tbody tr").forEach(row => {
@@ -315,12 +332,11 @@
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
             await navigator.share({ 
                 files: [file], 
-                title: "Laporan Kas", 
+                title: "Laporan Kas Edunexa", 
                 text: `Terlampir Laporan Buku Kas Edunexa. Periode: ${periodeText}` 
             });
         } else {
-            // Fallback: Jika dibuka di PC/Browser yang tidak punya fitur Share WA
-            alert("Fitur bagikan otomatis tidak didukung. File akan langsung diunduh ke perangkat Anda.");
+            alert("Fitur bagikan otomatis tidak didukung browser ini. File akan langsung diunduh.");
             const url = window.URL.createObjectURL(file);
             const a = document.createElement('a');
             a.href = url;
@@ -329,7 +345,6 @@
         }
     }
 
-    // Dipanggil saat klik tombol "Bagikan Laporan (CSV)" di bawah layar
     async function eksekusiShareBiasa() {
         let periodeTerpilih = document.getElementById('pilihBulan').value;
         let namaFile = periodeTerpilih === 'active' ? "Buku_Kas_Aktif.csv" : `Buku_Kas_${periodeTerpilih}.csv`;
@@ -342,38 +357,34 @@
         }
     }
 
-    // --- ALUR TUTUP BUKU YANG BARU ---
     async function tutupBuku() {
         if (appState.activeData.length === 0) {
             alert("Belum ada transaksi di bulan ini yang bisa ditutup.");
             return;
         }
 
-        let namaBulan = prompt("Masukkan NAMA BULAN yang akan ditutup secara permanen.\n(Contoh: Juni 2026)");
+        let namaBulan = prompt("PENTING: File akan otomatis dibagikan ke WA sebagai backup.\n\nMasukkan NAMA BULAN yang akan ditutup:\n(Contoh: Juni 2026)");
         
         if (!namaBulan) return; 
+        
         if (appState.history[namaBulan]) {
             alert("Nama bulan tersebut sudah ada di riwayat! Silakan gunakan nama lain.");
             return;
         }
 
-        // Peringatan Wajib Backup
-        let konfirmasi = confirm(`PENTING: Anda wajib membagikan/backup file CSV sebelum menutup buku bulan "${namaBulan}".\n\nTekan 'OK' untuk membagikan file ke WhatsApp sekarang, setelah itu buku akan otomatis ditutup dan disimpan.`);
-        
-        if (!konfirmasi) {
-            return; // Jika ditekan Cancel, tutup buku dibatalkan
-        }
-
-        // 1. Jalankan proses bagikan CSV terlebih dahulu
         try {
             await prosesShareCSV(`Buku_Kas_${namaBulan}.csv`, namaBulan);
+            eksekusiSimpanTutupBuku(namaBulan);
         } catch (error) {
-            // Jika user batal share di menu HP, kita tanya lagi
-            let lanjut = confirm("Proses bagikan ke WhatsApp dibatalkan. Apakah Anda tetap ingin melanjutkan Tutup Buku?");
-            if (!lanjut) return;
+            console.log("Status Share:", error);
+            let lanjut = confirm("Proses bagikan gagal atau dibatalkan oleh sistem.\n\nApakah Anda tetap ingin menutup buku dan menyimpan datanya ke riwayat?");
+            if (lanjut) {
+                eksekusiSimpanTutupBuku(namaBulan);
+            }
         }
+    }
 
-        // 2. Jika share sukses (atau tetap dilanjutkan), eksekusi penyimpanan ke riwayat
+    function eksekusiSimpanTutupBuku(namaBulan) {
         appState.history[namaBulan] = [...appState.activeData];
         let saldoTerakhir = appState.activeData[appState.activeData.length - 1].saldo;
 
