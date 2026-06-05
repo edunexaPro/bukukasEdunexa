@@ -20,34 +20,33 @@
         .header-controls { margin-bottom: 25px; padding: 15px; background: #e0e7ff; border-radius: 8px; border: 1px solid #c7d2fe; }
         select.pilih-bulan { padding: 10px; border-radius: 6px; border: 1px solid #818cf8; font-weight: 600; color: #3730a3; background: white; width: 100%; }
 
+        /* Form dibuat vertikal (stacking) */
         .form-group { display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; }
-        label { font-size: 13px; font-weight: 600; color: #64748b; margin-bottom: -10px; }
+        label { font-size: 13px; font-weight: 600; color: #64748b; margin-bottom: -5px; }
         input, textarea, button { padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; width: 100%; box-sizing: border-box; font-family: inherit; font-size: 14px; }
-        input:focus, textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
-        textarea { resize: vertical; min-height: 80px; } 
         
         .toggle-group { display: flex; gap: 8px; }
-        .toggle-btn { flex: 1; cursor: pointer; border: 1px solid #cbd5e1; background: white; color: #64748b; font-weight: 600; }
+        .toggle-btn { flex: 1; cursor: pointer; border: 1px solid #cbd5e1; background: white; color: #64748b; font-weight: 600; padding: 12px; border-radius: 6px; }
         #btnPemasukan.active { background: #10b981; color: white; border-color: #10b981; }
         #btnPengeluaran.active { background: #ef4444; color: white; border-color: #ef4444; }
 
-        .btn-add { background-color: #3b82f6; color: white; border: none; font-weight: 600; cursor: pointer; margin-top: 5px; }
+        .btn-add { background-color: #3b82f6; color: white; border: none; font-weight: 600; cursor: pointer; }
         
-        .table-responsive { overflow-x: auto; border-radius: 8px; border: 1px solid #e2e8f0; }
-        table { width: 100%; border-collapse: collapse; min-width: 700px; background: white; }
-        th, td { padding: 14px 12px; font-size: 14px; border-bottom: 1px solid #e2e8f0; }
-        th { background-color: #f8fafc; color: #475569; font-weight: 600; text-transform: uppercase; font-size: 12px; }
-        tbody tr:hover { background-color: #f1f5f9; } 
-        th:nth-child(3), td:nth-child(3), th:nth-child(4), td:nth-child(4), th:nth-child(5), td:nth-child(5) { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
-        td:nth-child(3) { color: #10b981; } td:nth-child(4) { color: #ef4444; } td:nth-child(5) { background-color: #f8fafc; font-weight: 700; }
+        .table-responsive { overflow-x: auto; border-radius: 8px; border: 1px solid #e2e8f0; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; background: white; }
+        th, td { padding: 12px; font-size: 14px; border-bottom: 1px solid #e2e8f0; text-align: center; }
+        th { background-color: #f8fafc; color: #475569; font-weight: 600; text-transform: uppercase; font-size: 11px; }
         
-        #totalSaldo { font-weight: 700; font-size: 1.4em; margin-top: 25px; padding: 20px; background: linear-gradient(135deg, #1e293b, #334155); color: white; text-align: right; border-radius: 8px; }
+        /* Penyesuaian agar tabel tetap rapi di HP */
+        th:nth-child(2), td:nth-child(2) { text-align: left; }
+        th:nth-child(3), td:nth-child(3), th:nth-child(4), td:nth-child(4), th:nth-child(5), td:nth-child(5) { text-align: right; font-variant-numeric: tabular-nums; }
+        
+        #totalSaldo { font-weight: 700; margin-top: 25px; padding: 15px; background: #1e293b; color: white; text-align: right; border-radius: 8px; }
 
-        .peringatan-histori { text-align: center; font-size: 12px; color: #ef4444; margin-top: 10px; font-weight: bold; display: none; }
         .bottom-actions { display: flex; gap: 10px; margin-top: 20px; }
-        .btn-tutup { background-color: #f59e0b; color: white; border: none; font-weight: 600; cursor: pointer; flex: 1; padding: 14px; }
-        .btn-hapus { background-color: #ef4444; color: white; border: none; font-weight: 600; cursor: pointer; flex: 1; padding: 14px; display: flex; align-items: center; justify-content: center; gap: 5px; }
-        .btn-share { background-color: #10b981; color: white; border: none; font-weight: 600; cursor: pointer; flex: 1; padding: 14px; }
+        .btn-tutup { background-color: #f59e0b; color: white; border: none; font-weight: 600; cursor: pointer; flex: 1; padding: 14px; border-radius: 6px; }
+        .btn-hapus { background-color: #ef4444; color: white; border: none; font-weight: 600; cursor: pointer; flex: 1; padding: 14px; border-radius: 6px; }
+        .btn-share { background-color: #10b981; color: white; border: none; font-weight: 600; cursor: pointer; flex: 1; padding: 14px; border-radius: 6px; }
         .btn-share:disabled { background-color: #cbd5e1; cursor: not-allowed; }
     </style>
 </head>
@@ -65,24 +64,29 @@
             <option value="active">-- Bulan Berjalan (Aktif) --</option>
         </select>
     </div>
-    
-    <div id="pesanHistori" class="peringatan-histori">Anda sedang melihat riwayat. Data tidak dapat diubah.</div>
 
     <div class="form-group" id="formInputArea">
-        <div class="form-row" style="display:flex; gap:15px;">
-            <div style="flex: 1;"><label>Tanggal</label><input type="date" id="tanggal"></div>
-            <div style="flex: 1;"><label>Jenis</label>
-                <div class="toggle-group"><button class="toggle-btn active" id="btnPemasukan" onclick="setJenis('Pemasukan')">Pemasukan</button><button class="toggle-btn" id="btnPengeluaran" onclick="setJenis('Pengeluaran')">Pengeluaran</button></div>
-            </div>
+        <label>Tanggal Transaksi</label>
+        <input type="date" id="tanggal">
+
+        <label>Jenis Transaksi</label>
+        <div class="toggle-group">
+            <button class="toggle-btn active" id="btnPemasukan" onclick="setJenis('Pemasukan')">Pemasukan</button>
+            <button class="toggle-btn" id="btnPengeluaran" onclick="setJenis('Pengeluaran')">Pengeluaran</button>
         </div>
-        <label>Uraian</label><textarea id="uraian"></textarea>
-        <label>Nominal (Rp)</label><input type="text" id="nominal" inputmode="numeric" placeholder="0" oninput="formatRupiah(this)">
+
+        <label>Uraian Kegiatan</label>
+        <textarea id="uraian" placeholder="Contoh: Pembelian ATK"></textarea>
+        
+        <label>Nominal (Rp)</label>
+        <input type="text" id="nominal" inputmode="numeric" placeholder="0" oninput="formatRupiah(this)">
+        
         <button class="btn-add" onclick="tambahData()">+ Tambah Transaksi</button>
     </div>
 
     <div class="table-responsive">
         <table id="tabelKas">
-            <thead><tr><th>Tanggal</th><th>Uraian</th><th>Pemasukan</th><th>Pengeluaran</th><th>Saldo</th></tr></thead>
+            <thead><tr><th>Tanggal</th><th>Uraian</th><th>Masuk</th><th>Keluar</th><th>Saldo</th></tr></thead>
             <tbody id="bodyKas"></tbody>
         </table>
     </div>
@@ -107,8 +111,7 @@
         } catch(e) { localStorage.removeItem('edunexa_kas_db'); }
         updateDropdownBulan();
         renderTable('active');
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('tanggal').value = today;
+        document.getElementById('tanggal').value = new Date().toISOString().split('T')[0];
     }
 
     function formatRupiah(el) {
@@ -125,21 +128,17 @@
     function tambahData() {
         const tgl = document.getElementById('tanggal').value;
         const uraian = document.getElementById('uraian').value;
-        const nomInput = document.getElementById('nominal').value.replace(/\./g, '');
-        const nominal = parseInt(nomInput) || 0;
+        const nominal = parseInt(document.getElementById('nominal').value.replace(/\./g, '')) || 0;
 
         if(!tgl || !uraian || !nominal) return alert("Lengkapi data!");
 
         let saldoAkhir = appState.activeData.length > 0 ? appState.activeData[appState.activeData.length - 1].saldo : 0;
-        
         if (appState.activeData.length === 0 && jenisTransaksi === "Pengeluaran") return alert("Data awal harus Pemasukan!");
         if (jenisTransaksi === "Pengeluaran" && nominal > saldoAkhir) return alert("Saldo tidak cukup!");
 
         let m = jenisTransaksi === "Pemasukan" ? nominal : 0;
         let k = jenisTransaksi === "Pengeluaran" ? nominal : 0;
-        let saldoBaru = saldoAkhir + m - k;
-
-        appState.activeData.push({ tgl, uraian, masuk: m, keluar: k, saldo: saldoBaru });
+        appState.activeData.push({ tgl, uraian, masuk: m, keluar: k, saldo: saldoAkhir + m - k });
         localStorage.setItem('edunexa_kas_db', JSON.stringify(appState));
         renderTable('active');
         document.getElementById('uraian').value = ""; document.getElementById('nominal').value = "";
@@ -149,12 +148,12 @@
         const tbody = document.getElementById("bodyKas");
         tbody.innerHTML = "";
         let currentSaldo = 0;
-        let dataTampil = periode === 'active' ? appState.activeData : appState.history[periode];
+        let data = periode === 'active' ? appState.activeData : appState.history[periode];
 
-        if(dataTampil) {
-            dataTampil.forEach(item => {
+        if(data) {
+            data.forEach(item => {
                 let tr = tbody.insertRow();
-                tr.insertCell(0).innerText = new Date(item.tgl).toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric'});
+                tr.insertCell(0).innerText = new Date(item.tgl).toLocaleDateString('id-ID', {day:'2-digit', month:'short'});
                 tr.insertCell(1).innerText = item.uraian;
                 tr.insertCell(2).innerText = item.masuk > 0 ? item.masuk.toLocaleString('id-ID') : '-';
                 tr.insertCell(3).innerText = item.keluar > 0 ? item.keluar.toLocaleString('id-ID') : '-';
@@ -163,13 +162,11 @@
             });
         }
         document.getElementById("totalSaldo").innerText = "Total Saldo: Rp " + currentSaldo.toLocaleString('id-ID');
-
-        const isBulanBerjalan = periode === 'active';
-        document.getElementById('formInputArea').style.display = isBulanBerjalan ? 'flex' : 'none';
-        document.getElementById('btnTutupBuku').style.display = isBulanBerjalan ? 'block' : 'none';
-        document.getElementById('btnHapusRiwayat').style.display = isBulanBerjalan ? 'none' : 'flex';
-        document.getElementById('pesanHistori').style.display = isBulanBerjalan ? 'none' : 'block';
-        document.getElementById('btnShare').disabled = isBulanBerjalan;
+        const isAct = periode === 'active';
+        document.getElementById('formInputArea').style.display = isAct ? 'flex' : 'none';
+        document.getElementById('btnTutupBuku').style.display = isAct ? 'block' : 'none';
+        document.getElementById('btnHapusRiwayat').style.display = isAct ? 'none' : 'flex';
+        document.getElementById('btnShare').disabled = isAct;
     }
 
     function hapusRiwayat() {
@@ -185,12 +182,11 @@
 
     function tutupBuku() {
         if(appState.activeData.length === 0) return alert("Tidak ada data!");
-        let b = prompt("Masukkan NAMA BULAN (Contoh: Juni 2026)");
+        let b = prompt("Masukkan NAMA BULAN:");
         if(!b || appState.history[b]) return;
-        
         appState.history[b] = [...appState.activeData];
         let s = appState.activeData[appState.activeData.length-1].saldo;
-        appState.activeData = [{tgl: new Date().toISOString().split('T')[0], uraian: "Saldo Awal ("+b+")", masuk: s, keluar: 0, saldo: s}];
+        appState.activeData = [{tgl: new Date().toISOString().split('T')[0], uraian: "Saldo Awal", masuk: s, keluar: 0, saldo: s}];
         localStorage.setItem('edunexa_kas_db', JSON.stringify(appState));
         updateDropdownBulan();
         document.getElementById('pilihBulan').value = b;
@@ -204,19 +200,3 @@
     }
 
     function gantiBulan() { renderTable(document.getElementById('pilihBulan').value); }
-
-    async function eksekusiShareBiasa() {
-        let p = document.getElementById('pilihBulan').value;
-        if(p === 'active') return;
-        let csv = "Tanggal,Uraian,Pemasukan,Pengeluaran,Saldo\n";
-        document.querySelectorAll("#tabelKas tbody tr").forEach(row => {
-            let c = row.querySelectorAll("td");
-            csv += `${c[0].innerText},"${c[1].innerText}",${c[2].innerText.replace(/\./g,'').replace('-','0')},${c[3].innerText.replace(/\./g,'').replace('-','0')},${c[4].innerText.replace(/\./g,'')}\n`;
-        });
-        const file = new File([csv], `Buku Kas ${p}.csv`, {type: "text/csv"});
-        if(navigator.canShare && navigator.canShare({files:[file]})) await navigator.share({files:[file], title:"Laporan"});
-        else { const a = document.createElement('a'); a.href = URL.createObjectURL(file); a.download = `Buku Kas ${p}.csv`; a.click(); }
-    }
-</script>
-</body>
-</html>
