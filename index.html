@@ -22,26 +22,44 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); 
         }
 
-        /* Penempatan Logo */
-        .logo-container {
-            text-align: center;
-            margin-bottom: 15px;
-        }
+        .logo-container { text-align: center; margin-bottom: 15px; }
+        .logo-container img { max-height: 80px; object-fit: contain; }
+
+        h2 { text-align: center; color: #1e293b; margin-top: 0; margin-bottom: 10px; font-weight: 700; letter-spacing: -0.5px; }
         
-        .logo-container img {
-            max-height: 80px; /* Bisa disesuaikan ukurannya */
-            object-fit: contain;
+        .header-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #e0e7ff;
+            border-radius: 8px;
+            border: 1px solid #c7d2fe;
         }
 
-        h2 {
-            text-align: center;
-            color: #1e293b;
-            margin-top: 0;
-            margin-bottom: 25px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
+        select.pilih-bulan {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #818cf8;
+            font-weight: 600;
+            color: #3730a3;
+            background: white;
+            width: 100%;
         }
-        
+
+        .btn-tutup {
+            background-color: #f59e0b;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn-tutup:hover { background-color: #d97706; }
+
         .form-group { 
             display: flex; 
             flex-direction: column; 
@@ -53,132 +71,78 @@
             border: 1px solid #e2e8f0;
         }
 
-        label {
-            font-size: 13px;
-            font-weight: 600;
-            color: #64748b;
-            margin-bottom: -10px;
-        }
+        label { font-size: 13px; font-weight: 600; color: #64748b; margin-bottom: -10px; }
 
         input, textarea, button { 
-            padding: 12px; 
-            border: 1px solid #cbd5e1; 
-            border-radius: 6px; 
-            width: 100%; 
-            box-sizing: border-box; 
-            font-family: inherit; 
-            font-size: 14px;
-            transition: all 0.2s ease;
+            padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; 
+            width: 100%; box-sizing: border-box; font-family: inherit; font-size: 14px;
         }
 
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-        }
-
+        input:focus, textarea:focus, select:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
         textarea { resize: vertical; min-height: 80px; } 
         
         .toggle-group { display: flex; gap: 8px; }
-        .toggle-btn { 
-            flex: 1; 
-            cursor: pointer; 
-            border: 1px solid #cbd5e1; 
-            background: white; 
-            color: #64748b; 
-            font-weight: 600; 
-        }
-        
-        .toggle-btn:hover { background: #f1f5f9; }
+        .toggle-btn { flex: 1; cursor: pointer; border: 1px solid #cbd5e1; background: white; color: #64748b; font-weight: 600; }
         
         #btnPemasukan.active { background: #10b981; color: white; border-color: #10b981; }
         #btnPengeluaran.active { background: #ef4444; color: white; border-color: #ef4444; }
 
-        .btn-add { 
-            background-color: #3b82f6; 
-            color: white; 
-            border: none; 
-            font-weight: 600; 
-            cursor: pointer; 
-            margin-top: 5px;
-        }
+        .btn-add { background-color: #3b82f6; color: white; border: none; font-weight: 600; cursor: pointer; margin-top: 5px; }
         .btn-add:hover { background-color: #2563eb; }
 
-        .btn-share { 
-            background-color: #10b981; 
-            color: white; 
-            border: none; 
-            width: 100%; 
-            margin-top: 20px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .btn-share:hover { background-color: #059669; }
-
+        .btn-share { background-color: #10b981; color: white; border: none; width: 100%; margin-top: 20px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        
         .table-responsive { overflow-x: auto; border-radius: 8px; border: 1px solid #e2e8f0; }
         table { width: 100%; border-collapse: collapse; min-width: 700px; background: white; }
         th, td { padding: 14px 12px; font-size: 14px; border-bottom: 1px solid #e2e8f0; }
-        
-        th { 
-            background-color: #f8fafc; 
-            color: #475569; 
-            font-weight: 600; 
-            text-transform: uppercase;
-            font-size: 12px;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid #cbd5e1;
-        }
+        th { background-color: #f8fafc; color: #475569; font-weight: 600; text-transform: uppercase; font-size: 12px; border-bottom: 2px solid #cbd5e1; }
 
         tbody tr:hover { background-color: #f1f5f9; } 
         
         th:nth-child(1), td:nth-child(1) { text-align: center; width: 15%; } 
         th:nth-child(2), td:nth-child(2) { text-align: left; width: 35%; } 
         
-        /* Font dibuat konsisten namun angkanya tetap sejajar berkat tabular-nums */
         th:nth-child(3), td:nth-child(3),
         th:nth-child(4), td:nth-child(4),
-        th:nth-child(5), td:nth-child(5) { 
-            text-align: right; 
-            font-variant-numeric: tabular-nums; 
-            font-weight: 600;
-        }
+        th:nth-child(5), td:nth-child(5) { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
         
         td:nth-child(3) { color: #10b981; } 
         td:nth-child(4) { color: #ef4444; } 
         td:nth-child(5) { background-color: #f8fafc; color: #1e293b; } 
         
-        #totalSaldo { 
-            font-weight: 700; 
-            font-size: 1.4em; 
-            margin-top: 25px; 
-            padding: 20px; 
-            background: linear-gradient(135deg, #1e293b, #334155); 
-            color: white;
-            text-align: right; 
-            border-radius: 8px; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
+        #totalSaldo { font-weight: 700; font-size: 1.4em; margin-top: 25px; padding: 20px; background: linear-gradient(135deg, #1e293b, #334155); color: white; text-align: right; border-radius: 8px; }
+
+        .peringatan-histori { text-align: center; font-size: 12px; color: #ef4444; margin-top: 10px; font-weight: bold; display: none; }
 
         @media (min-width: 768px) {
             .form-row { display: flex; gap: 15px; }
             .form-row > * { flex: 1; margin-bottom: 0; }
+            .header-controls { flex-direction: row; align-items: center; }
+            .btn-tutup { width: auto; padding: 10px 20px; }
         }
     </style>
 </head>
-<body>
+<body onload="initApp()">
 
 <div class="container">
     <div class="logo-container">
-       <img src="https://i.ibb.co.com/JFvkRknD/Chat-GPT-Image-5-Jun-2026-22-30-27.png" alt="Logo Edunexa">
+        <img src="https://i.ibb.co.com/JFvkRknD/Chat-GPT-Image-5-Jun-2026-22-30-27.png" alt="Logo Edunexa">
     </div>
 
     <h2>Buku Kas Edunexa</h2>
+
+    <div class="header-controls">
+        <select id="pilihBulan" class="pilih-bulan" onchange="gantiBulan()">
+            <option value="active">-- Buku Bulan Berjalan (Aktif) --</option>
+        </select>
+        <button id="btnTutupBuku" class="btn-tutup" onclick="tutupBuku()">Tutup Buku Bulan Ini</button>
+    </div>
     
-    <div class="form-group">
+    <div id="pesanHistori" class="peringatan-histori">
+        Anda sedang melihat riwayat. Data tidak dapat diubah.
+    </div>
+
+    <div class="form-group" id="formInputArea">
         <div class="form-row">
             <div style="flex: 1;">
                 <label for="tanggal">Tanggal Transaksi</label>
@@ -194,7 +158,7 @@
         </div>
 
         <label for="uraian">Uraian Kegiatan</label>
-        <textarea id="uraian" placeholder="Contoh: Saldo Awal / Pembelian ATK"></textarea>
+        <textarea id="uraian" placeholder="Contoh: Pembelian ATK / Dana Bos Masuk"></textarea>
         
         <label for="nominal">Nominal (Rp)</label>
         <input type="text" id="nominal" inputmode="numeric" placeholder="0" oninput="formatRupiah(this)">
@@ -215,7 +179,7 @@
 
     <div id="totalSaldo">Total Saldo: Rp 0</div>
     
-    <button class="btn-share" onclick="shareCSV()">
+    <button class="btn-share" onclick="eksekusiShareBiasa()">
         <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M17.5 16.5c-1.1 0-2.1.5-2.7 1.2l-6.8-3.9c.1-.4.1-.8.1-1.3s0-.9-.1-1.3l6.8-3.9c.6.7 1.6 1.2 2.7 1.2 2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4c0 .4 0 .8.1 1.3L6.8 9.7c-.6-.7-1.6-1.2-2.7-1.2-2.2 0-4 1.8-4 4s1.8 4 4 4c1.1 0 2.1-.5 2.7-1.2l6.8 3.9c-.1.4-.1.8-.1 1.3 0 2.2 1.8 4 4 4s4-1.8 4-4-1.8-4-4-4z"/>
         </svg>
@@ -224,89 +188,118 @@
 </div>
 
 <script>
+    let appState = {
+        activeData: [], 
+        history: {}     
+    };
+    
     let jenisTransaksi = "Pemasukan";
-    let saldoAkhir = 0;
 
-    // Fungsi untuk membuat pemisah ribuan saat diketik
-    function formatRupiah(element) {
-        // Hapus karakter selain angka
-        let value = element.value.replace(/[^0-9]/g, '');
-        // Tambahkan pemisah titik
-        if (value) {
-            element.value = parseInt(value, 10).toLocaleString('id-ID');
-        } else {
-            element.value = '';
+    function initApp() {
+        const savedData = localStorage.getItem('edunexa_kas_db');
+        if (savedData) {
+            appState = JSON.parse(savedData);
         }
+        updateDropdownBulan();
+        renderTable('active');
+        setTanggalHariIni();
+    }
+
+    function simpanKeLocalStorage() {
+        localStorage.setItem('edunexa_kas_db', JSON.stringify(appState));
+    }
+
+    function setTanggalHariIni() {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('tanggal').value = today;
+    }
+
+    function formatRupiah(element) {
+        let value = element.value.replace(/[^0-9]/g, '');
+        element.value = value ? parseInt(value, 10).toLocaleString('id-ID') : '';
     }
 
     function setJenis(jenis) {
         jenisTransaksi = jenis;
-        
-        const btnPemasukan = document.getElementById("btnPemasukan");
-        const btnPengeluaran = document.getElementById("btnPengeluaran");
-
-        if (jenis === "Pemasukan") {
-            btnPemasukan.classList.add("active");
-            btnPengeluaran.classList.remove("active");
-        } else {
-            btnPengeluaran.classList.add("active");
-            btnPemasukan.classList.remove("active");
-        }
+        document.getElementById("btnPemasukan").classList.toggle("active", jenis === "Pemasukan");
+        document.getElementById("btnPengeluaran").classList.toggle("active", jenis === "Pengeluaran");
     }
 
     function tambahData() {
         const tgl = document.getElementById("tanggal").value;
         const uraian = document.getElementById("uraian").value;
-        
-        // Ambil nilai nominal, hapus semua titik, lalu ubah ke integer
         const nominalInput = document.getElementById("nominal").value.replace(/\./g, '');
         const nominal = parseInt(nominalInput) || 0;
 
         if (!tgl || !uraian || !nominal) { 
-            alert("Mohon lengkapi semua data transaksi!"); 
-            return; 
+            alert("Mohon lengkapi semua data transaksi!"); return; 
         }
 
-        const table = document.getElementById("bodyKas");
+        let saldoAkhir = appState.activeData.length > 0 ? appState.activeData[appState.activeData.length - 1].saldo : 0;
 
-        if (table.rows.length === 0 && jenisTransaksi === "Pengeluaran") {
-            alert("Data awal harus berupa Pemasukan sebagai saldo awal.");
-            return;
+        if (appState.activeData.length === 0 && jenisTransaksi === "Pengeluaran") {
+            alert("Data awal harus berupa Pemasukan sebagai saldo awal."); return;
         }
 
         if (jenisTransaksi === "Pengeluaran" && nominal > saldoAkhir) {
-            alert("Peringatan: Saldo tidak mencukupi untuk pengeluaran ini!");
-            return;
+            alert("Peringatan: Saldo tidak mencukupi untuk pengeluaran ini!"); return;
         }
 
-        const row = table.insertRow();
-        
-        const tglObj = new Date(tgl);
-        const tglFormat = tglObj.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-        
-        row.insertCell(0).innerText = tglFormat;
-        row.insertCell(1).innerText = uraian;
-        
-        const nominalStr = nominal.toLocaleString('id-ID');
+        let masuk = jenisTransaksi === "Pemasukan" ? nominal : 0;
+        let keluar = jenisTransaksi === "Pengeluaran" ? nominal : 0;
+        let saldoBaru = saldoAkhir + masuk - keluar;
 
-        if (jenisTransaksi === "Pemasukan") {
-            row.insertCell(2).innerText = nominalStr;
-            row.insertCell(3).innerText = "-";
-            saldoAkhir += nominal;
-        } else {
-            row.insertCell(2).innerText = "-";
-            row.insertCell(3).innerText = nominalStr;
-            saldoAkhir -= nominal;
-        }
+        appState.activeData.push({
+            tgl: tgl,
+            uraian: uraian,
+            masuk: masuk,
+            keluar: keluar,
+            saldo: saldoBaru
+        });
 
-        row.insertCell(4).innerText = saldoAkhir.toLocaleString('id-ID');
-        document.getElementById("totalSaldo").innerText = "Total Saldo: Rp " + saldoAkhir.toLocaleString('id-ID');
+        simpanKeLocalStorage();
+        renderTable('active');
 
         document.getElementById("uraian").value = "";
         document.getElementById("nominal").value = "";
     }
 
-    async function shareCSV() {
+    function renderTable(periode) {
+        const tbody = document.getElementById("bodyKas");
+        tbody.innerHTML = "";
+        let currentSaldo = 0;
+
+        let dataTampil = periode === 'active' ? appState.activeData : appState.history[periode];
+
+        dataTampil.forEach(item => {
+            let tr = tbody.insertRow();
+            const tglObj = new Date(item.tgl);
+            const tglFormat = tglObj.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+            
+            tr.insertCell(0).innerText = tglFormat;
+            tr.insertCell(1).innerText = item.uraian;
+            tr.insertCell(2).innerText = item.masuk > 0 ? item.masuk.toLocaleString('id-ID') : '-';
+            tr.insertCell(3).innerText = item.keluar > 0 ? item.keluar.toLocaleString('id-ID') : '-';
+            tr.insertCell(4).innerText = item.saldo.toLocaleString('id-ID');
+            
+            currentSaldo = item.saldo;
+        });
+
+        document.getElementById("totalSaldo").innerText = "Total Saldo: Rp " + currentSaldo.toLocaleString('id-ID');
+
+        if (periode === 'active') {
+            document.getElementById('formInputArea').style.display = 'flex';
+            document.getElementById('btnTutupBuku').style.display = 'block';
+            document.getElementById('pesanHistori').style.display = 'none';
+        } else {
+            document.getElementById('formInputArea').style.display = 'none';
+            document.getElementById('btnTutupBuku').style.display = 'none';
+            document.getElementById('pesanHistori').style.display = 'block';
+        }
+    }
+
+    // --- FUNGSI GENERATOR CSV INTI ---
+    async function prosesShareCSV(namaFile, periodeText) {
         let csv = "Tanggal,Uraian,Pemasukan,Pengeluaran,Saldo\n";
         document.querySelectorAll("#tabelKas tbody tr").forEach(row => {
             let cols = row.querySelectorAll("td");
@@ -317,21 +310,103 @@
             csv += `${cols[0].innerText},"${cols[1].innerText}",${pemasukan},${pengeluaran},${saldo}\n`;
         });
 
-        const file = new File([csv], "Buku_Kas_Edunexa.csv", { type: "text/csv" });
+        const file = new File([csv], namaFile, { type: "text/csv" });
 
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            try {
-                await navigator.share({ 
-                    files: [file], 
-                    title: "Buku Kas Edunexa", 
-                    text: "Laporan Buku Kas Edunexa terbaru terlampir." 
-                });
-            } catch (err) { 
-                console.log("Membatalkan share:", err); 
-            }
+            await navigator.share({ 
+                files: [file], 
+                title: "Laporan Kas", 
+                text: `Terlampir Laporan Buku Kas Edunexa. Periode: ${periodeText}` 
+            });
         } else {
-            alert("Browser/Perangkat ini belum mendukung fitur bagikan otomatis.");
+            // Fallback: Jika dibuka di PC/Browser yang tidak punya fitur Share WA
+            alert("Fitur bagikan otomatis tidak didukung. File akan langsung diunduh ke perangkat Anda.");
+            const url = window.URL.createObjectURL(file);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = namaFile;
+            a.click();
         }
+    }
+
+    // Dipanggil saat klik tombol "Bagikan Laporan (CSV)" di bawah layar
+    async function eksekusiShareBiasa() {
+        let periodeTerpilih = document.getElementById('pilihBulan').value;
+        let namaFile = periodeTerpilih === 'active' ? "Buku_Kas_Aktif.csv" : `Buku_Kas_${periodeTerpilih}.csv`;
+        let periodeText = periodeTerpilih === 'active' ? 'Bulan Berjalan' : periodeTerpilih;
+
+        try {
+            await prosesShareCSV(namaFile, periodeText);
+        } catch (err) {
+            console.log("Membatalkan share:", err);
+        }
+    }
+
+    // --- ALUR TUTUP BUKU YANG BARU ---
+    async function tutupBuku() {
+        if (appState.activeData.length === 0) {
+            alert("Belum ada transaksi di bulan ini yang bisa ditutup.");
+            return;
+        }
+
+        let namaBulan = prompt("Masukkan NAMA BULAN yang akan ditutup secara permanen.\n(Contoh: Juni 2026)");
+        
+        if (!namaBulan) return; 
+        if (appState.history[namaBulan]) {
+            alert("Nama bulan tersebut sudah ada di riwayat! Silakan gunakan nama lain.");
+            return;
+        }
+
+        // Peringatan Wajib Backup
+        let konfirmasi = confirm(`PENTING: Anda wajib membagikan/backup file CSV sebelum menutup buku bulan "${namaBulan}".\n\nTekan 'OK' untuk membagikan file ke WhatsApp sekarang, setelah itu buku akan otomatis ditutup dan disimpan.`);
+        
+        if (!konfirmasi) {
+            return; // Jika ditekan Cancel, tutup buku dibatalkan
+        }
+
+        // 1. Jalankan proses bagikan CSV terlebih dahulu
+        try {
+            await prosesShareCSV(`Buku_Kas_${namaBulan}.csv`, namaBulan);
+        } catch (error) {
+            // Jika user batal share di menu HP, kita tanya lagi
+            let lanjut = confirm("Proses bagikan ke WhatsApp dibatalkan. Apakah Anda tetap ingin melanjutkan Tutup Buku?");
+            if (!lanjut) return;
+        }
+
+        // 2. Jika share sukses (atau tetap dilanjutkan), eksekusi penyimpanan ke riwayat
+        appState.history[namaBulan] = [...appState.activeData];
+        let saldoTerakhir = appState.activeData[appState.activeData.length - 1].saldo;
+
+        const today = new Date().toISOString().split('T')[0];
+        appState.activeData = [{
+            tgl: today,
+            uraian: "Saldo Awal (Pindahan dari " + namaBulan + ")",
+            masuk: saldoTerakhir,
+            keluar: 0,
+            saldo: saldoTerakhir
+        }];
+
+        simpanKeLocalStorage();
+        updateDropdownBulan();
+        renderTable('active');
+        
+        alert(`Sukses! Buku bulan ${namaBulan} telah ditutup. Saldo akhir telah dipindahkan sebagai Saldo Awal bulan berikutnya.`);
+    }
+
+    function updateDropdownBulan() {
+        const select = document.getElementById('pilihBulan');
+        select.innerHTML = '<option value="active">-- Buku Bulan Berjalan (Aktif) --</option>';
+        
+        for (let key in appState.history) {
+            let opt = document.createElement('option');
+            opt.value = key;
+            opt.innerText = "Lihat Riwayat: " + key;
+            select.appendChild(opt);
+        }
+    }
+
+    function gantiBulan() {
+        renderTable(document.getElementById('pilihBulan').value);
     }
 </script>
 </body>
