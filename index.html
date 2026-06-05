@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buku Kas Edunexa</title>
     <style>
-        /* Menggunakan font sistem yang modern dan bersih */
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
             margin: 0; 
@@ -14,7 +13,6 @@
             color: #334155;
         }
 
-        /* Desain Card Utama */
         .container { 
             max-width: 900px; 
             margin: auto; 
@@ -22,6 +20,17 @@
             padding: 25px; 
             border-radius: 12px; 
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); 
+        }
+
+        /* Penempatan Logo */
+        .logo-container {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .logo-container img {
+            max-height: 80px; /* Bisa disesuaikan ukurannya */
+            object-fit: contain;
         }
 
         h2 {
@@ -33,7 +42,6 @@
             letter-spacing: -0.5px;
         }
         
-        /* Desain Form */
         .form-group { 
             display: flex; 
             flex-direction: column; 
@@ -71,7 +79,6 @@
 
         textarea { resize: vertical; min-height: 80px; } 
         
-        /* Toggle Button Pemasukan/Pengeluaran */
         .toggle-group { display: flex; gap: 8px; }
         .toggle-btn { 
             flex: 1; 
@@ -84,11 +91,9 @@
         
         .toggle-btn:hover { background: #f1f5f9; }
         
-        /* Warna dinamis untuk toggle */
         #btnPemasukan.active { background: #10b981; color: white; border-color: #10b981; }
         #btnPengeluaran.active { background: #ef4444; color: white; border-color: #ef4444; }
 
-        /* Desain Tombol Aksi */
         .btn-add { 
             background-color: #3b82f6; 
             color: white; 
@@ -114,7 +119,6 @@
         }
         .btn-share:hover { background-color: #059669; }
 
-        /* Desain Tabel Profesional */
         .table-responsive { overflow-x: auto; border-radius: 8px; border: 1px solid #e2e8f0; }
         table { width: 100%; border-collapse: collapse; min-width: 700px; background: white; }
         th, td { padding: 14px 12px; font-size: 14px; border-bottom: 1px solid #e2e8f0; }
@@ -129,24 +133,24 @@
             border-bottom: 2px solid #cbd5e1;
         }
 
-        tbody tr:hover { background-color: #f1f5f9; } /* Efek hover pada baris */
+        tbody tr:hover { background-color: #f1f5f9; } 
         
-        /* Penyesuaian Kolom (Standar Akuntansi) */
-        th:nth-child(1), td:nth-child(1) { text-align: center; width: 15%; } /* Tanggal */
-        th:nth-child(2), td:nth-child(2) { text-align: left; width: 35%; } /* Uraian */
+        th:nth-child(1), td:nth-child(1) { text-align: center; width: 15%; } 
+        th:nth-child(2), td:nth-child(2) { text-align: left; width: 35%; } 
+        
+        /* Font dibuat konsisten namun angkanya tetap sejajar berkat tabular-nums */
         th:nth-child(3), td:nth-child(3),
         th:nth-child(4), td:nth-child(4),
         th:nth-child(5), td:nth-child(5) { 
-            text-align: right; /* Angka uang harus rata kanan */
-            font-family: "Courier New", Courier, monospace; /* Font monospaced untuk angka agar sejajar */
+            text-align: right; 
+            font-variant-numeric: tabular-nums; 
             font-weight: 600;
         }
         
-        td:nth-child(3) { color: #10b981; } /* Warna hijau untuk pemasukan */
-        td:nth-child(4) { color: #ef4444; } /* Warna merah untuk pengeluaran */
-        td:nth-child(5) { background-color: #f8fafc; color: #1e293b; } /* Highlight kolom saldo */
+        td:nth-child(3) { color: #10b981; } 
+        td:nth-child(4) { color: #ef4444; } 
+        td:nth-child(5) { background-color: #f8fafc; color: #1e293b; } 
         
-        /* Desain Widget Saldo Akhir */
         #totalSaldo { 
             font-weight: 700; 
             font-size: 1.4em; 
@@ -159,7 +163,6 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-        /* Responsive untuk layar komputer */
         @media (min-width: 768px) {
             .form-row { display: flex; gap: 15px; }
             .form-row > * { flex: 1; margin-bottom: 0; }
@@ -169,6 +172,10 @@
 <body>
 
 <div class="container">
+    <div class="logo-container">
+        <img src="https://i.ibb.co/JFvkRknD/logo.png" alt="Logo Edunexa">
+    </div>
+
     <h2>Buku Kas Edunexa</h2>
     
     <div class="form-group">
@@ -190,7 +197,7 @@
         <textarea id="uraian" placeholder="Contoh: Saldo Awal / Pembelian ATK"></textarea>
         
         <label for="nominal">Nominal (Rp)</label>
-        <input type="number" id="nominal" placeholder="0">
+        <input type="text" id="nominal" inputmode="numeric" placeholder="0" oninput="formatRupiah(this)">
         
         <button class="btn-add" onclick="tambahData()">+ Tambah Transaksi</button>
     </div>
@@ -220,6 +227,18 @@
     let jenisTransaksi = "Pemasukan";
     let saldoAkhir = 0;
 
+    // Fungsi untuk membuat pemisah ribuan saat diketik
+    function formatRupiah(element) {
+        // Hapus karakter selain angka
+        let value = element.value.replace(/[^0-9]/g, '');
+        // Tambahkan pemisah titik
+        if (value) {
+            element.value = parseInt(value, 10).toLocaleString('id-ID');
+        } else {
+            element.value = '';
+        }
+    }
+
     function setJenis(jenis) {
         jenisTransaksi = jenis;
         
@@ -238,7 +257,9 @@
     function tambahData() {
         const tgl = document.getElementById("tanggal").value;
         const uraian = document.getElementById("uraian").value;
-        const nominalInput = document.getElementById("nominal").value;
+        
+        // Ambil nilai nominal, hapus semua titik, lalu ubah ke integer
+        const nominalInput = document.getElementById("nominal").value.replace(/\./g, '');
         const nominal = parseInt(nominalInput) || 0;
 
         if (!tgl || !uraian || !nominal) { 
@@ -260,7 +281,6 @@
 
         const row = table.insertRow();
         
-        // Memformat tanggal menjadi format lokal yang rapi (Opsional, tapi bagus)
         const tglObj = new Date(tgl);
         const tglFormat = tglObj.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
         
