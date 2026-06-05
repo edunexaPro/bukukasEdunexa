@@ -109,7 +109,6 @@
         }
         .btn-share:hover:not(:disabled) { background-color: #059669; }
         
-        /* CSS Khusus saat tombol bagikan terkunci (disabled) */
         .btn-share:disabled {
             background-color: #cbd5e1;
             color: #64748b;
@@ -182,4 +181,248 @@
         <button id="btnTutupBuku" class="btn-tutup" onclick="tutupBuku()">Tutup Buku</button>
         
         <button id="btnShare" class="btn-share" onclick="eksekusiShareBiasa()">
-            <svg width="20" height="20" fill="
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17.5 16.5c-1.1 0-2.1.5-2.7 1.2l-6.8-3.9c.1-.4.1-.8.1-1.3s0-.9-.1-1.3l6.8-3.9c.6.7 1.6 1.2 2.7 1.2 2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4c0 .4 0 .8.1 1.3L6.8 9.7c-.6-.7-1.6-1.2-2.7-1.2-2.2 0-4 1.8-4 4s1.8 4 4 4c1.1 0 2.1-.5 2.7-1.2l6.8 3.9c-.1.4-.1.8-.1 1.3 0 2.2 1.8 4 4 4s4-1.8 4-4-1.8-4-4-4z"/>
+            </svg>
+            <span id="teksShare">Bagikan CSV</span>
+        </button>
+    </div>
+</div>
+
+<script>
+    let appState = {
+        activeData: [], 
+        history: {}     
+    };
+    
+    let jenisTransaksi = "Pemasukan";
+
+    function initApp() {
+        // Pengaman: Mencegah crash jika memori browser rusak
+        try {
+            const savedData = localStorage.getItem('edunexa_kas_db');
+            if (savedData) {
+                let parsedData = JSON.parse(savedData);
+                if (parsedData.activeData && parsedData.history) {
+                    appState = parsedData;
+                }
+            }
+        } catch (e) {
+            console.error("Data memori lama terdeteksi rusak. Mereset memori...");
+            localStorage.removeItem('edunexa_kas_db');
+        }
+
+        updateDropdownBulan();
+        renderTable('active');
+        setTanggalHariIni();
+    }
+
+    function simpanKeLocalStorage() {
+        localStorage.setItem('edunexa_kas_db', JSON.stringify(appState));
+    }
+
+    function setTanggalHariIni() {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('tanggal').value = today;
+    }
+
+    function formatRupiah(element) {
+        let value = element.value.replace(/[^0-9]/g, '');
+        element.value = value ? parseInt(value, 10).toLocaleString('id-ID') : '';
+    }
+
+    function setJenis(jenis) {
+        jenisTransaksi = jenis;
+        document.getElementById("btnPemasukan").classList.toggle("active", jenis === "Pemasukan");
+        document.getElementById("btnPengeluaran").classList.toggle("active", jenis === "Pengeluaran");
+    }
+
+    function tambahData() {
+        const tgl = document.getElementById("tanggal").value;
+        const uraian = document.getElementById("uraian").value;
+        const nominalInput = document.getElementById("nominal").value.replace(/\./g, '');
+        const nominal = parseInt(nominalInput) || 0;
+
+        if (!tgl || !uraian || !nominal) { 
+            alert("Mohon lengkapi semua data transaksi!"); return; 
+        }
+
+        let saldoAkhir = appState.activeData.length > 0 ? appState.activeData[appState.activeData.length - 1].saldo : 0;
+
+        if (appState.activeData.length === 0 && jenisTransaksi === "Pengeluaran") {
+            alert("Data awal harus berupa Pemasukan sebagai saldo awal."); return;
+        }
+
+        if (jenisTransaksi === "Pengeluaran" && nominal > saldoAkhir) {
+            alert("Peringatan: Saldo tidak mencukupi untuk pengeluaran ini!"); return;
+        }
+
+        let masuk = jenisTransaksi === "Pemasukan" ? nominal : 0;
+        let keluar = jenisTransaksi === "Pengeluaran" ? nominal : 0;
+        let saldoBaru = saldoAkhir + masuk - keluar;
+
+        appState.activeData.push({
+            tgl: tgl,
+            uraian: uraian,
+            masuk: masuk,
+            keluar: keluar,
+            saldo: saldoBaru
+        });
+
+        simpanKeLocalStorage();
+        renderTable('active');
+
+        document.getElementById("uraian").value = "";
+        document.getElementById("nominal").value = "";
+    }
+
+    function renderTable(periode) {
+        const tbody = document.getElementById("bodyKas");
+        tbody.innerHTML = "";
+        let currentSaldo = 0;
+
+        let dataTampil = periode === 'active' ? appState.activeData : appState.history[periode];
+
+        if (dataTampil) {
+            dataTampil.forEach(item => {
+                let tr = tbody.insertRow();
+                const tglObj = new Date(item.tgl);
+                const tglFormat = tglObj.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+                
+                tr.insertCell(0).innerText = tglFormat;
+                tr.insertCell(1).innerText = item.uraian;
+                tr.insertCell(2).innerText = item.masuk > 0 ? item.masuk.toLocaleString('id-ID') : '-';
+                tr.insertCell(3).innerText = item.keluar > 0 ? item.keluar.toLocaleString('id-ID') : '-';
+                tr.insertCell(4).innerText = item.saldo.toLocaleString('id-ID');
+                
+                currentSaldo = item.saldo;
+            });
+        }
+
+        document.getElementById("totalSaldo").innerText = "Total Saldo: Rp " + currentSaldo.toLocaleString('id-ID');
+
+        const btnShare = document.getElementById('btnShare');
+        const teksShare = document.getElementById('teksShare');
+
+        if (periode === 'active') {
+            document.getElementById('formInputArea').style.display = 'flex';
+            document.getElementById('btnTutupBuku').style.display = 'block'; 
+            document.getElementById('pesanHistori').style.display = 'none';
+            
+            // Pengaman agar tidak error jika HTML belum tuntas diload
+            if (btnShare) btnShare.disabled = true;
+            if (teksShare) teksShare.innerText = "Simpan/Tutup Dulu";
+        } else {
+            document.getElementById('formInputArea').style.display = 'none';
+            document.getElementById('btnTutupBuku').style.display = 'none'; 
+            document.getElementById('pesanHistori').style.display = 'block';
+            
+            if (btnShare) btnShare.disabled = false;
+            if (teksShare) teksShare.innerText = "Bagikan CSV " + periode;
+        }
+    }
+
+    async function prosesShareCSV(namaFile, periodeText) {
+        let csv = "Tanggal,Uraian,Pemasukan,Pengeluaran,Saldo\n";
+        document.querySelectorAll("#tabelKas tbody tr").forEach(row => {
+            let cols = row.querySelectorAll("td");
+            let pemasukan = cols[2].innerText.replace(/\./g, '').replace('-', '0');
+            let pengeluaran = cols[3].innerText.replace(/\./g, '').replace('-', '0');
+            let saldo = cols[4].innerText.replace(/\./g, '').replace('-', '0'); 
+            
+            csv += `${cols[0].innerText},"${cols[1].innerText}",${pemasukan},${pengeluaran},${saldo}\n`;
+        });
+
+        const file = new File([csv], namaFile, { type: "text/csv" });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({ 
+                files: [file], 
+                title: "Laporan Kas Edunexa", 
+                text: `Terlampir Laporan Buku Kas Edunexa untuk periode: ${periodeText}` 
+            });
+        } else {
+            alert("Fitur bagikan otomatis tidak didukung browser ini. File akan langsung diunduh.");
+            const url = window.URL.createObjectURL(file);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = namaFile;
+            a.click();
+        }
+    }
+
+    async function eksekusiShareBiasa() {
+        let periodeTerpilih = document.getElementById('pilihBulan').value;
+        if (periodeTerpilih === 'active') return;
+
+        let namaFile = `Buku Kas ${periodeTerpilih}.csv`;
+
+        try {
+            await prosesShareCSV(namaFile, periodeTerpilih);
+        } catch (err) {
+            console.log("Membatalkan share:", err);
+        }
+    }
+
+    function tutupBuku() {
+        if (appState.activeData.length === 0) {
+            alert("Belum ada transaksi di bulan ini yang bisa ditutup.");
+            return;
+        }
+
+        let namaBulan = prompt("Masukkan NAMA BULAN yang akan ditutup:\n(Contoh: Juni 2026)");
+        
+        if (!namaBulan) return; 
+        
+        if (appState.history[namaBulan]) {
+            alert("Nama bulan tersebut sudah ada di riwayat! Silakan gunakan nama lain.");
+            return;
+        }
+
+        let konfirmasi = confirm(`Yakin ingin menyimpan dan menutup buku untuk bulan "${namaBulan}"?`);
+        
+        if (konfirmasi) {
+            eksekusiSimpanTutupBuku(namaBulan);
+        }
+    }
+
+    function eksekusiSimpanTutupBuku(namaBulan) {
+        appState.history[namaBulan] = [...appState.activeData];
+        let saldoTerakhir = appState.activeData[appState.activeData.length - 1].saldo;
+
+        const today = new Date().toISOString().split('T')[0];
+        appState.activeData = [{
+            tgl: today,
+            uraian: "Saldo Awal (Pindahan dari " + namaBulan + ")",
+            masuk: saldoTerakhir,
+            keluar: 0,
+            saldo: saldoTerakhir
+        }];
+
+        simpanKeLocalStorage();
+        updateDropdownBulan();
+        
+        document.getElementById('pilihBulan').value = namaBulan;
+        renderTable(namaBulan);
+        
+        alert(`Buku Kas ${namaBulan} telah disimpan!\n\nSilakan klik tombol "Bagikan CSV" di bawah untuk membagikan/backup laporannya.`);
+    }
+
+    function updateDropdownBulan() {
+        const select = document.getElementById('pilihBulan');
+        select.innerHTML = '<option value="active">-- Buku Bulan Berjalan (Aktif) --</option>';
+        
+        for (let key in appState.history) {
+            let opt = document.createElement('option');
+            opt.value = key;
+            opt.innerText = "Lihat Riwayat: " + key;
+            select.appendChild(opt);
+        }
+    }
+
+    function gantiBulan() {
+        renderTable(document.getElementById('pilihBulan').value);
+    }
+</script>
+</body>
+</html>
