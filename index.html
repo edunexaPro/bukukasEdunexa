@@ -15,22 +15,28 @@
         .logo-container img { max-height: 80px; object-fit: contain; }
         h2 { text-align: center; color: #1e293b; margin-top: 0; margin-bottom: 5px; font-weight: 700; }
         
-        /* Tombol Reset Ikon Kecil di Kanan Atas */
-        .top-reset-container { text-align: right; margin-bottom: 10px; }
+        /* Tombol Reset: Di pojok kanan atas, tidak akan melebar */
+        .top-reset-container { 
+            display: flex; 
+            justify-content: flex-end; /* Memaksa ke kanan */
+            margin-bottom: 10px; 
+        }
         .btn-reset-icon { 
-            display: inline-flex; 
+            display: flex; 
             flex-direction: column; 
             align-items: center;
-            background: transparent; 
-            border: 1px solid #fee2e2; 
-            padding: 4px 8px; 
+            justify-content: center;
+            background: #fef2f2; 
+            border: 1px solid #fecaca; 
+            padding: 4px 10px; 
             cursor: pointer; 
             border-radius: 6px; 
             font-size: 8px; 
             color: #ef4444;
             font-weight: 700;
+            width: auto; /* Lebar menyesuaikan isi */
+            min-width: 45px;
         }
-        .btn-reset-icon:hover { background: #fee2e2; }
         .btn-reset-icon img { width: 16px; height: 16px; margin-bottom: 2px; }
 
         .header-controls { margin-bottom: 25px; padding: 15px; background: #e0e7ff; border-radius: 8px; border: 1px solid #c7d2fe; }
