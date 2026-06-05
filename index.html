@@ -5,161 +5,167 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buku Kas Edunexa</title>
     <style>
-        body { font-family: sans-serif; margin: 10px; background-color: #f8f9fa; }
-        .container { max-width: 900px; margin: auto; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        
-        .form-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-        input, textarea, button { padding: 10px; border: 1px solid #ccc; border-radius: 4px; width: 100%; box-sizing: border-box; font-family: sans-serif; }
-        textarea { resize: vertical; } 
-        
-        /* Toggle Button */
-        .toggle-group { display: flex; gap: 5px; }
-        .toggle-btn { flex: 1; cursor: pointer; border: 1px solid #007bff; background: white; color: #007bff; font-weight: bold; }
-        .toggle-btn.active { background: #007bff; color: white; }
+        /* Menggunakan font sistem yang modern dan bersih */
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+            margin: 0; 
+            padding: 20px 10px; 
+            background-color: #f1f5f9; 
+            color: #334155;
+        }
 
-        .table-responsive { overflow-x: auto; margin-top: 20px; }
-        /* Memperlebar min-width karena kolom bertambah */
-        table { width: 100%; border-collapse: collapse; min-width: 700px; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: center; font-size: 14px; }
-        th { background-color: #343a40; color: white; }
+        /* Desain Card Utama */
+        .container { 
+            max-width: 900px; 
+            margin: auto; 
+            background: #ffffff; 
+            padding: 25px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); 
+        }
+
+        h2 {
+            text-align: center;
+            color: #1e293b;
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
         
-        /* Kolom Uraian rata kiri */
-        td:nth-child(2) { min-width: 150px; text-align: left; } 
-        /* Warna khusus untuk kolom Saldo agar lebih menonjol */
-        td:nth-child(5) { font-weight: bold; background-color: #f8f9fa; }
+        /* Desain Form */
+        .form-group { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 15px; 
+            margin-bottom: 30px; 
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: -10px;
+        }
+
+        input, textarea, button { 
+            padding: 12px; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 6px; 
+            width: 100%; 
+            box-sizing: border-box; 
+            font-family: inherit; 
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        textarea { resize: vertical; min-height: 80px; } 
         
-        .btn-add { background-color: #28a745; color: white; border: none; font-weight: bold; cursor: pointer; }
-        .btn-share { background-color: #17a2b8; color: white; border: none; width: 100%; margin-top: 15px; font-weight: bold; cursor: pointer; }
+        /* Toggle Button Pemasukan/Pengeluaran */
+        .toggle-group { display: flex; gap: 8px; }
+        .toggle-btn { 
+            flex: 1; 
+            cursor: pointer; 
+            border: 1px solid #cbd5e1; 
+            background: white; 
+            color: #64748b; 
+            font-weight: 600; 
+        }
         
-        #totalSaldo { font-weight: bold; font-size: 1.2em; margin-top: 15px; padding: 10px; background: #e9ecef; text-align: center; border-radius: 4px; border: 1px solid #ccc; }
+        .toggle-btn:hover { background: #f1f5f9; }
+        
+        /* Warna dinamis untuk toggle */
+        #btnPemasukan.active { background: #10b981; color: white; border-color: #10b981; }
+        #btnPengeluaran.active { background: #ef4444; color: white; border-color: #ef4444; }
+
+        /* Desain Tombol Aksi */
+        .btn-add { 
+            background-color: #3b82f6; 
+            color: white; 
+            border: none; 
+            font-weight: 600; 
+            cursor: pointer; 
+            margin-top: 5px;
+        }
+        .btn-add:hover { background-color: #2563eb; }
+
+        .btn-share { 
+            background-color: #10b981; 
+            color: white; 
+            border: none; 
+            width: 100%; 
+            margin-top: 20px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-share:hover { background-color: #059669; }
+
+        /* Desain Tabel Profesional */
+        .table-responsive { overflow-x: auto; border-radius: 8px; border: 1px solid #e2e8f0; }
+        table { width: 100%; border-collapse: collapse; min-width: 700px; background: white; }
+        th, td { padding: 14px 12px; font-size: 14px; border-bottom: 1px solid #e2e8f0; }
+        
+        th { 
+            background-color: #f8fafc; 
+            color: #475569; 
+            font-weight: 600; 
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #cbd5e1;
+        }
+
+        tbody tr:hover { background-color: #f1f5f9; } /* Efek hover pada baris */
+        
+        /* Penyesuaian Kolom (Standar Akuntansi) */
+        th:nth-child(1), td:nth-child(1) { text-align: center; width: 15%; } /* Tanggal */
+        th:nth-child(2), td:nth-child(2) { text-align: left; width: 35%; } /* Uraian */
+        th:nth-child(3), td:nth-child(3),
+        th:nth-child(4), td:nth-child(4),
+        th:nth-child(5), td:nth-child(5) { 
+            text-align: right; /* Angka uang harus rata kanan */
+            font-family: "Courier New", Courier, monospace; /* Font monospaced untuk angka agar sejajar */
+            font-weight: 600;
+        }
+        
+        td:nth-child(3) { color: #10b981; } /* Warna hijau untuk pemasukan */
+        td:nth-child(4) { color: #ef4444; } /* Warna merah untuk pengeluaran */
+        td:nth-child(5) { background-color: #f8fafc; color: #1e293b; } /* Highlight kolom saldo */
+        
+        /* Desain Widget Saldo Akhir */
+        #totalSaldo { 
+            font-weight: 700; 
+            font-size: 1.4em; 
+            margin-top: 25px; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #1e293b, #334155); 
+            color: white;
+            text-align: right; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive untuk layar komputer */
+        @media (min-width: 768px) {
+            .form-row { display: flex; gap: 15px; }
+            .form-row > * { flex: 1; margin-bottom: 0; }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Buku Kas Edunexa</h2>
-    
-    <div class="form-group">
-        <input type="date" id="tanggal">
-        <textarea id="uraian" rows="3" placeholder="Uraian Kegiatan"></textarea>
-        
-        <div class="toggle-group">
-            <button class="toggle-btn active" id="btnPemasukan" onclick="setJenis('Pemasukan')">Pemasukan</button>
-            <button class="toggle-btn" id="btnPengeluaran" onclick="setJenis('Pengeluaran')">Pengeluaran</button>
-        </div>
-        
-        <input type="number" id="nominal" placeholder="Nominal (Rp)">
-        <button class="btn-add" onclick="tambahData()">Tambah Transaksi</button>
-    </div>
-
-    <div class="table-responsive">
-        <table id="tabelKas">
-            <thead>
-                <tr>
-                    <th>Tanggal</th><th>Uraian</th><th>Pemasukan</th><th>Pengeluaran</th><th>Saldo</th>
-                </tr>
-            </thead>
-            <tbody id="bodyKas"></tbody>
-        </table>
-    </div>
-
-    <div id="totalSaldo">Total Saldo Kas: Rp 0</div>
-    <button class="btn-share" onclick="shareCSV()">Ekspor CSV</button>
-</div>
-
-<script>
-    let jenisTransaksi = "Pemasukan";
-    let saldoAkhir = 0;
-
-    function setJenis(jenis) {
-        jenisTransaksi = jenis;
-        document.getElementById("btnPemasukan").classList.toggle("active", jenis === "Pemasukan");
-        document.getElementById("btnPengeluaran").classList.toggle("active", jenis === "Pengeluaran");
-    }
-
-    function tambahData() {
-        const tgl = document.getElementById("tanggal").value;
-        const uraian = document.getElementById("uraian").value;
-        const nominalInput = document.getElementById("nominal").value;
-        const nominal = parseInt(nominalInput) || 0;
-
-        if (!tgl || !uraian || !nominal) { 
-            alert("Mohon lengkapi semua data!"); 
-            return; 
-        }
-
-        const table = document.getElementById("bodyKas");
-
-        // VALIDASI: Jika data pertama kali diinput adalah pengeluaran
-        if (table.rows.length === 0 && jenisTransaksi === "Pengeluaran") {
-            alert("Data awal tidak boleh berupa pengeluaran! Silakan input Pemasukan terlebih dahulu sebagai saldo awal.");
-            return;
-        }
-
-        // VALIDASI (Opsional): Cegah pengeluaran jika saldo tidak cukup
-        // Jika tidak ingin dibatasi, Anda bisa menghapus blok IF di bawah ini
-        if (jenisTransaksi === "Pengeluaran" && nominal > saldoAkhir) {
-            alert("Saldo tidak mencukupi untuk pengeluaran ini!");
-            return;
-        }
-
-        const row = table.insertRow();
-        row.insertCell(0).innerText = tgl;
-        row.insertCell(1).innerText = uraian;
-        
-        const nominalStr = nominal.toLocaleString('id-ID');
-
-        // Kalkulasi Saldo Berjalan
-        if (jenisTransaksi === "Pemasukan") {
-            row.insertCell(2).innerText = nominalStr;
-            row.insertCell(3).innerText = "-";
-            saldoAkhir += nominal;
-        } else {
-            row.insertCell(2).innerText = "-";
-            row.insertCell(3).innerText = nominalStr;
-            saldoAkhir -= nominal;
-        }
-
-        // Masukkan saldo ke kolom ke-5
-        row.insertCell(4).innerText = saldoAkhir.toLocaleString('id-ID');
-
-        // Update tampilan Total Saldo di bawah tabel
-        document.getElementById("totalSaldo").innerText = "Total Saldo Kas: Rp " + saldoAkhir.toLocaleString('id-ID');
-
-        // Bersihkan form
-        document.getElementById("uraian").value = "";
-        document.getElementById("nominal").value = "";
-    }
-
-    async function shareCSV() {
-        // Tambahkan header kolom Saldo
-        let csv = "Tanggal,Uraian,Pemasukan,Pengeluaran,Saldo\n";
-        document.querySelectorAll("#tabelKas tbody tr").forEach(row => {
-            let cols = row.querySelectorAll("td");
-            
-            let pemasukan = cols[2].innerText.replace(/\./g, '').replace('-', '0');
-            let pengeluaran = cols[3].innerText.replace(/\./g, '').replace('-', '0');
-            let saldo = cols[4].innerText.replace(/\./g, '').replace('-', '0'); // Ambil data kolom saldo
-            
-            csv += `${cols[0].innerText},"${cols[1].innerText}",${pemasukan},${pengeluaran},${saldo}\n`;
-        });
-
-        const file = new File([csv], "Buku_Kas_Edunexa.csv", { type: "text/csv" });
-
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            try {
-                await navigator.share({ 
-                    files: [file], 
-                    title: "Buku Kas Edunexa", 
-                    text: "Berikut adalah laporan Buku Kas Edunexa terbaru." 
-                });
-            } catch (err) { 
-                console.log("Membatalkan share:", err); 
-            }
-        } else {
-            alert("Browser/Perangkat ini belum mendukung fitur bagikan otomatis.");
-        }
-    }
-</script>
-</body>
-</html>
