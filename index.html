@@ -161,16 +161,21 @@
         let idx = appState.historyOrder.indexOf(p);
         let toDelete = appState.historyOrder.slice(idx);
 
-        if(confirm("Hapus " + p + " dan semua data setelahnya agar saldo tetap akurat?")) {
+        if(confirm("Hapus " + p + " dan semua data setelahnya?")) {
             toDelete.forEach(m => delete appState.history[m]);
             appState.historyOrder = appState.historyOrder.slice(0, idx);
             
-            // Logic: Sesuaikan Saldo Awal Bulan Berjalan
+            // RESET SALDO AWAL DI BULAN BERJALAN
             if (appState.historyOrder.length === 0) {
+                // Jika tidak ada riwayat, Bulan Berjalan harus kosong (0 saldo)
                 appState.activeData = [];
             } else {
+                // Jika masih ada riwayat, ambil saldo akhir bulan terakhir
                 let lastMonthName = appState.historyOrder[appState.historyOrder.length - 1];
-                let lastSaldo = appState.history[lastMonthName][appState.history[lastMonthName].length - 1].saldo;
+                let lastMonthData = appState.history[lastMonthName];
+                let lastSaldo = lastMonthData[lastMonthData.length - 1].saldo;
+                
+                // Ganti baris pertama (Saldo Awal) di Bulan Berjalan dengan saldo baru
                 appState.activeData = [{
                     tgl: new Date().toISOString().split('T')[0], 
                     uraian: "Saldo Awal (" + lastMonthName + ")", 
