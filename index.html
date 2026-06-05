@@ -15,10 +15,10 @@
         .logo-container img { max-height: 80px; object-fit: contain; }
         h2 { text-align: center; color: #1e293b; margin-top: 0; margin-bottom: 5px; font-weight: 700; }
         
-        /* Tombol Reset Kecil di Atas */
-        .top-reset-container { text-align: right; margin-bottom: 15px; }
-        .btn-reset-mini { background: #f1f5f9; color: #94a3b8; border: none; font-size: 10px; padding: 4px 8px; cursor: pointer; border-radius: 4px; font-weight: 600; text-transform: uppercase; }
-        .btn-reset-mini:hover { background: #fee2e2; color: #ef4444; }
+        /* Tombol Reset Kecil (Button style) di kanan atas */
+        .top-reset-container { text-align: right; margin-bottom: 10px; }
+        .btn-reset-mini { background: #fee2e2; color: #ef4444; border: 1px solid #fecaca; font-size: 10px; padding: 5px 10px; cursor: pointer; border-radius: 4px; font-weight: 600; }
+        .btn-reset-mini:hover { background: #ef4444; color: white; }
 
         .header-controls { margin-bottom: 25px; padding: 15px; background: #e0e7ff; border-radius: 8px; border: 1px solid #c7d2fe; }
         select.pilih-bulan { padding: 10px; border-radius: 6px; border: 1px solid #818cf8; font-weight: 600; color: #3730a3; background: white; width: 100%; }
@@ -54,8 +54,10 @@
 <div class="container">
     <div class="logo-container"><img src="https://i.ibb.co.com/JFvkRknD/Chat-GPT-Image-5-Jun-2026-22-30-27.png" alt="Logo"></div>
     <h2>Buku Kas Edunexa</h2>
+    
+    <!-- Tombol Reset Kecil di kanan -->
     <div class="top-reset-container">
-        <button class="btn-reset-mini" onclick="resetTotal()">Reset Semua Data</button>
+        <button class="btn-reset-mini" onclick="resetTotal()">Reset Semua</button>
     </div>
 
     <div class="header-controls">
