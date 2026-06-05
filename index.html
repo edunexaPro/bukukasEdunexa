@@ -6,26 +6,32 @@
     <title>Buku Kas Edunexa</title>
     <style>
         body { font-family: sans-serif; margin: 10px; background-color: #f8f9fa; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .container { max-width: 900px; margin: auto; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         
         .form-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-        input, button { padding: 10px; border: 1px solid #ccc; border-radius: 4px; width: 100%; box-sizing: border-box; }
+        input, textarea, button { padding: 10px; border: 1px solid #ccc; border-radius: 4px; width: 100%; box-sizing: border-box; font-family: sans-serif; }
+        textarea { resize: vertical; } 
         
         /* Toggle Button */
         .toggle-group { display: flex; gap: 5px; }
-        .toggle-btn { flex: 1; cursor: pointer; border: 1px solid #007bff; background: white; color: #007bff; }
+        .toggle-btn { flex: 1; cursor: pointer; border: 1px solid #007bff; background: white; color: #007bff; font-weight: bold; }
         .toggle-btn.active { background: #007bff; color: white; }
 
         .table-responsive { overflow-x: auto; margin-top: 20px; }
-        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        /* Memperlebar min-width karena kolom bertambah */
+        table { width: 100%; border-collapse: collapse; min-width: 700px; }
         th, td { border: 1px solid #ddd; padding: 12px; text-align: center; font-size: 14px; }
         th { background-color: #343a40; color: white; }
         
-        /* Tinggi kolom uraian */
+        /* Kolom Uraian rata kiri */
         td:nth-child(2) { min-width: 150px; text-align: left; } 
+        /* Warna khusus untuk kolom Saldo agar lebih menonjol */
+        td:nth-child(5) { font-weight: bold; background-color: #f8f9fa; }
         
-        .btn-add { background-color: #28a745; color: white; border: none; }
-        .btn-share { background-color: #17a2b8; color: white; border: none; width: 100%; margin-top: 15px; }
+        .btn-add { background-color: #28a745; color: white; border: none; font-weight: bold; cursor: pointer; }
+        .btn-share { background-color: #17a2b8; color: white; border: none; width: 100%; margin-top: 15px; font-weight: bold; cursor: pointer; }
+        
+        #totalSaldo { font-weight: bold; font-size: 1.2em; margin-top: 15px; padding: 10px; background: #e9ecef; text-align: center; border-radius: 4px; border: 1px solid #ccc; }
     </style>
 </head>
 <body>
@@ -35,11 +41,13 @@
     
     <div class="form-group">
         <input type="date" id="tanggal">
-        <input type="text" id="uraian" placeholder="Uraian Kegiatan (Tinggi kolom disesuaikan)" style="height: 50px;">
+        <textarea id="uraian" rows="3" placeholder="Uraian Kegiatan"></textarea>
+        
         <div class="toggle-group">
             <button class="toggle-btn active" id="btnPemasukan" onclick="setJenis('Pemasukan')">Pemasukan</button>
             <button class="toggle-btn" id="btnPengeluaran" onclick="setJenis('Pengeluaran')">Pengeluaran</button>
         </div>
+        
         <input type="number" id="nominal" placeholder="Nominal (Rp)">
         <button class="btn-add" onclick="tambahData()">Tambah Transaksi</button>
     </div>
@@ -48,18 +56,20 @@
         <table id="tabelKas">
             <thead>
                 <tr>
-                    <th>Tanggal</th><th>Uraian</th><th>Pemasukan</th><th>Pengeluaran</th>
+                    <th>Tanggal</th><th>Uraian</th><th>Pemasukan</th><th>Pengeluaran</th><th>Saldo</th>
                 </tr>
             </thead>
             <tbody id="bodyKas"></tbody>
         </table>
     </div>
 
+    <div id="totalSaldo">Total Saldo Kas: Rp 0</div>
     <button class="btn-share" onclick="shareCSV()">Bagikan ke WhatsApp</button>
 </div>
 
 <script>
     let jenisTransaksi = "Pemasukan";
+    let saldoAkhir = 0;
 
     function setJenis(jenis) {
         jenisTransaksi = jenis;
@@ -70,34 +80,84 @@
     function tambahData() {
         const tgl = document.getElementById("tanggal").value;
         const uraian = document.getElementById("uraian").value;
-        const nominal = document.getElementById("nominal").value;
+        const nominalInput = document.getElementById("nominal").value;
+        const nominal = parseInt(nominalInput) || 0;
 
-        if (!tgl || !uraian || !nominal) { alert("Lengkapi data!"); return; }
+        if (!tgl || !uraian || !nominal) { 
+            alert("Mohon lengkapi semua data!"); 
+            return; 
+        }
 
         const table = document.getElementById("bodyKas");
+
+        // VALIDASI: Jika data pertama kali diinput adalah pengeluaran
+        if (table.rows.length === 0 && jenisTransaksi === "Pengeluaran") {
+            alert("Data awal tidak boleh berupa pengeluaran! Silakan input Pemasukan terlebih dahulu sebagai saldo awal.");
+            return;
+        }
+
+        // VALIDASI (Opsional): Cegah pengeluaran jika saldo tidak cukup
+        // Jika tidak ingin dibatasi, Anda bisa menghapus blok IF di bawah ini
+        if (jenisTransaksi === "Pengeluaran" && nominal > saldoAkhir) {
+            alert("Saldo tidak mencukupi untuk pengeluaran ini!");
+            return;
+        }
+
         const row = table.insertRow();
-        
         row.insertCell(0).innerText = tgl;
         row.insertCell(1).innerText = uraian;
-        row.insertCell(2).innerText = (jenisTransaksi === "Pemasukan") ? nominal : "";
-        row.insertCell(3).innerText = (jenisTransaksi === "Pengeluaran") ? nominal : "";
+        
+        const nominalStr = nominal.toLocaleString('id-ID');
+
+        // Kalkulasi Saldo Berjalan
+        if (jenisTransaksi === "Pemasukan") {
+            row.insertCell(2).innerText = nominalStr;
+            row.insertCell(3).innerText = "-";
+            saldoAkhir += nominal;
+        } else {
+            row.insertCell(2).innerText = "-";
+            row.insertCell(3).innerText = nominalStr;
+            saldoAkhir -= nominal;
+        }
+
+        // Masukkan saldo ke kolom ke-5
+        row.insertCell(4).innerText = saldoAkhir.toLocaleString('id-ID');
+
+        // Update tampilan Total Saldo di bawah tabel
+        document.getElementById("totalSaldo").innerText = "Total Saldo Kas: Rp " + saldoAkhir.toLocaleString('id-ID');
+
+        // Bersihkan form
+        document.getElementById("uraian").value = "";
+        document.getElementById("nominal").value = "";
     }
 
     async function shareCSV() {
-        let csv = "Tanggal,Uraian,Pemasukan,Pengeluaran\n";
+        // Tambahkan header kolom Saldo
+        let csv = "Tanggal,Uraian,Pemasukan,Pengeluaran,Saldo\n";
         document.querySelectorAll("#tabelKas tbody tr").forEach(row => {
             let cols = row.querySelectorAll("td");
-            csv += `${cols[0].innerText},${cols[1].innerText},${cols[2].innerText},${cols[3].innerText}\n`;
+            
+            let pemasukan = cols[2].innerText.replace(/\./g, '').replace('-', '0');
+            let pengeluaran = cols[3].innerText.replace(/\./g, '').replace('-', '0');
+            let saldo = cols[4].innerText.replace(/\./g, '').replace('-', '0'); // Ambil data kolom saldo
+            
+            csv += `${cols[0].innerText},"${cols[1].innerText}",${pemasukan},${pengeluaran},${saldo}\n`;
         });
 
         const file = new File([csv], "Buku_Kas_Edunexa.csv", { type: "text/csv" });
 
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
             try {
-                await navigator.share({ files: [file], title: "Buku Kas", text: "Data Kas Edunexa" });
-            } catch (err) { alert("Gagal membagikan: " + err); }
+                await navigator.share({ 
+                    files: [file], 
+                    title: "Buku Kas Edunexa", 
+                    text: "Berikut adalah laporan Buku Kas Edunexa terbaru." 
+                });
+            } catch (err) { 
+                console.log("Membatalkan share:", err); 
+            }
         } else {
-            alert("Fitur bagikan tidak didukung di browser ini.");
+            alert("Browser/Perangkat ini belum mendukung fitur bagikan otomatis.");
         }
     }
 </script>
