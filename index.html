@@ -82,7 +82,6 @@
 </div>
 
 <script>
-    // Penambahan historyOrder untuk melacak urutan bulan
     let appState = { activeData: [], history: {}, historyOrder: [] };
     let jenisTransaksi = "Pemasukan";
 
@@ -91,10 +90,7 @@
             const savedData = localStorage.getItem('edunexa_kas_db');
             if (savedData) {
                 appState = JSON.parse(savedData);
-                // Migrasi data lama ke historyOrder jika belum ada
-                if (!appState.historyOrder) {
-                    appState.historyOrder = Object.keys(appState.history);
-                }
+                if (!appState.historyOrder) appState.historyOrder = Object.keys(appState.history);
             }
         } catch(e) { localStorage.removeItem('edunexa_kas_db'); }
         updateDropdownBulan();
@@ -163,12 +159,24 @@
         if(p === 'active') return;
 
         let idx = appState.historyOrder.indexOf(p);
-        // Ambil semua bulan dari bulan yang dipilih sampai bulan terakhir
         let toDelete = appState.historyOrder.slice(idx);
 
-        if(confirm("Menghapus bulan " + p + " dan bulan setelahnya (" + toDelete.join(", ") + ")? Ini perlu dilakukan agar saldo tetap valid.")) {
+        if(confirm("Hapus " + p + " dan semua data setelahnya agar saldo tetap akurat?")) {
             toDelete.forEach(m => delete appState.history[m]);
             appState.historyOrder = appState.historyOrder.slice(0, idx);
+            
+            // Logic: Sesuaikan Saldo Awal Bulan Berjalan
+            if (appState.historyOrder.length === 0) {
+                appState.activeData = [];
+            } else {
+                let lastMonthName = appState.historyOrder[appState.historyOrder.length - 1];
+                let lastSaldo = appState.history[lastMonthName][appState.history[lastMonthName].length - 1].saldo;
+                appState.activeData = [{
+                    tgl: new Date().toISOString().split('T')[0], 
+                    uraian: "Saldo Awal (" + lastMonthName + ")", 
+                    masuk: lastSaldo, keluar: 0, saldo: lastSaldo
+                }];
+            }
             
             localStorage.setItem('edunexa_kas_db', JSON.stringify(appState));
             updateDropdownBulan();
@@ -193,7 +201,7 @@
         if(!b || appState.history[b]) return;
         
         appState.history[b] = [...appState.activeData];
-        appState.historyOrder.push(b); // Rekam urutan bulan
+        appState.historyOrder.push(b);
         
         let s = appState.activeData[appState.activeData.length-1].saldo;
         appState.activeData = [{tgl: new Date().toISOString().split('T')[0], uraian: "Saldo Awal ("+b+")", masuk: s, keluar: 0, saldo: s}];
@@ -206,7 +214,6 @@
     function updateDropdownBulan() {
         const s = document.getElementById('pilihBulan');
         s.innerHTML = '<option value="active">-- Bulan Berjalan --</option>';
-        // Iterasi berdasarkan urutan yang tersimpan (historyOrder)
         appState.historyOrder.forEach(k => {
             s.innerHTML += `<option value="${k}">Riwayat: ${k}</option>`;
         });
