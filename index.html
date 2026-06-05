@@ -13,8 +13,13 @@
         .container { max-width: 900px; margin: auto; background: #ffffff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
         .logo-container { text-align: center; margin-bottom: 15px; }
         .logo-container img { max-height: 80px; object-fit: contain; }
-        h2 { text-align: center; color: #1e293b; margin-top: 0; margin-bottom: 10px; font-weight: 700; }
+        h2 { text-align: center; color: #1e293b; margin-top: 0; margin-bottom: 5px; font-weight: 700; }
         
+        /* Tombol Reset Kecil di Atas */
+        .top-reset-container { text-align: right; margin-bottom: 15px; }
+        .btn-reset-mini { background: #f1f5f9; color: #94a3b8; border: none; font-size: 10px; padding: 4px 8px; cursor: pointer; border-radius: 4px; font-weight: 600; text-transform: uppercase; }
+        .btn-reset-mini:hover { background: #fee2e2; color: #ef4444; }
+
         .header-controls { margin-bottom: 25px; padding: 15px; background: #e0e7ff; border-radius: 8px; border: 1px solid #c7d2fe; }
         select.pilih-bulan { padding: 10px; border-radius: 6px; border: 1px solid #818cf8; font-weight: 600; color: #3730a3; background: white; width: 100%; }
 
@@ -42,7 +47,6 @@
         .btn-tutup { background-color: #f59e0b; color: white; border: none; font-weight: 600; cursor: pointer; flex: 1; padding: 14px; border-radius: 6px; }
         .btn-hapus { background-color: #ef4444; color: white; border: none; font-weight: 600; cursor: pointer; flex: 1; padding: 14px; border-radius: 6px; }
         .btn-share { background-color: #10b981; color: white; border: none; font-weight: 600; cursor: pointer; flex: 1; padding: 14px; border-radius: 6px; }
-        .btn-reset { background-color: #64748b; color: white; border: none; font-weight: 600; cursor: pointer; flex: 1; padding: 14px; border-radius: 6px; }
     </style>
 </head>
 <body onload="initApp()">
@@ -50,6 +54,9 @@
 <div class="container">
     <div class="logo-container"><img src="https://i.ibb.co.com/JFvkRknD/Chat-GPT-Image-5-Jun-2026-22-30-27.png" alt="Logo"></div>
     <h2>Buku Kas Edunexa</h2>
+    <div class="top-reset-container">
+        <button class="btn-reset-mini" onclick="resetTotal()">Reset Semua Data</button>
+    </div>
 
     <div class="header-controls">
         <select id="pilihBulan" class="pilih-bulan" onchange="gantiBulan()"><option value="active">-- Bulan Berjalan --</option></select>
@@ -77,7 +84,6 @@
         <button id="btnTutupBuku" class="btn-tutup" onclick="tutupBuku()">Tutup Buku</button>
         <button id="btnHapusRiwayat" class="btn-hapus" onclick="hapusRiwayat()" style="display:none;">Hapus Riwayat</button>
         <button id="btnShare" class="btn-share" onclick="eksekusiShareBiasa()" style="display:none;">Bagikan CSV</button>
-        <button class="btn-reset" onclick="resetTotal()">Reset Semua</button>
     </div>
 </div>
 
@@ -165,17 +171,13 @@
             toDelete.forEach(m => delete appState.history[m]);
             appState.historyOrder = appState.historyOrder.slice(0, idx);
             
-            // RESET SALDO AWAL DI BULAN BERJALAN
             if (appState.historyOrder.length === 0) {
-                // Jika tidak ada riwayat, Bulan Berjalan harus kosong (0 saldo)
                 appState.activeData = [];
             } else {
-                // Jika masih ada riwayat, ambil saldo akhir bulan terakhir
                 let lastMonthName = appState.historyOrder[appState.historyOrder.length - 1];
                 let lastMonthData = appState.history[lastMonthName];
                 let lastSaldo = lastMonthData[lastMonthData.length - 1].saldo;
                 
-                // Ganti baris pertama (Saldo Awal) di Bulan Berjalan dengan saldo baru
                 appState.activeData = [{
                     tgl: new Date().toISOString().split('T')[0], 
                     uraian: "Saldo Awal (" + lastMonthName + ")", 
