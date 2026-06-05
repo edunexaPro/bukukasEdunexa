@@ -135,7 +135,7 @@
 
     <div class="header-controls">
         <select id="pilihBulan" class="pilih-bulan" onchange="gantiBulan()">
-            <option value="active">-- Buku Bulan Berjalan (Aktif) --</option>
+            <option value="active">-- Bulan Berjalan (Aktif) --</option>
         </select>
     </div>
     
@@ -336,33 +336,22 @@
         }
     }
 
-    // Fungsi Baru: Hapus Riwayat
     function hapusRiwayat() {
         let periodeTerpilih = document.getElementById('pilihBulan').value;
         
-        if (periodeTerpilih === 'active') return; // Mencegah penghapusan bulan berjalan
+        if (periodeTerpilih === 'active') return; 
 
-        let konfirmasi1 = confirm(`PERINGATAN: Anda yakin ingin menghapus data riwayat bulan "${periodeTerpilih}"?`);
+        let konfirmasi = confirm(`Apakah Anda yakin akan menghapus data riwayat bulan "${periodeTerpilih}"?`);
         
-        if (konfirmasi1) {
-            let konfirmasi2 = confirm("Data yang dihapus TIDAK DAPAT DIKEMBALIKAN. Lanjutkan hapus?");
+        if (konfirmasi) {
+            delete appState.history[periodeTerpilih];
+            simpanKeLocalStorage();
+            updateDropdownBulan();
             
-            if (konfirmasi2) {
-                // Hapus data dari objek history
-                delete appState.history[periodeTerpilih];
-                
-                // Simpan perubahan ke memori
-                simpanKeLocalStorage();
-                
-                // Perbarui dropdown
-                updateDropdownBulan();
-                
-                // Pindahkan tampilan kembali ke bulan berjalan
-                document.getElementById('pilihBulan').value = 'active';
-                renderTable('active');
-                
-                alert(`Riwayat Buku Kas ${periodeTerpilih} berhasil dihapus permanen.`);
-            }
+            document.getElementById('pilihBulan').value = 'active';
+            renderTable('active');
+            
+            alert(`Riwayat Buku Kas ${periodeTerpilih} berhasil dihapus.`);
         }
     }
 
@@ -423,11 +412,8 @@
             return;
         }
 
-        let konfirmasi = confirm(`Yakin ingin menyimpan dan menutup buku untuk bulan "${namaBulan}"?`);
-        
-        if (konfirmasi) {
-            eksekusiSimpanTutupBuku(namaBulan);
-        }
+        // Langsung eksekusi tanpa confirm()
+        eksekusiSimpanTutupBuku(namaBulan);
     }
 
     function eksekusiSimpanTutupBuku(namaBulan) {
@@ -454,7 +440,7 @@
 
     function updateDropdownBulan() {
         const select = document.getElementById('pilihBulan');
-        select.innerHTML = '<option value="active">-- Buku Bulan Berjalan (Aktif) --</option>';
+        select.innerHTML = '<option value="active">-- Bulan Berjalan (Aktif) --</option>';
         
         for (let key in appState.history) {
             let opt = document.createElement('option');
